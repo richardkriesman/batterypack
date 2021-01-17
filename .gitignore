@@ -1,0 +1,8 @@
+.idea/
+.DS_Store
+
+node_modules
+
+lib
+tsconfig.tsbuildinfo
+yarn-error.log
