@@ -16,7 +16,12 @@ export class Formatter {
    * Formats the project's source code in the Prettier style.
    */
   public async format(): Promise<void> {
-    for await (const path of this.project.walk(this.project.paths.source)) {
+    for await (const [path, isDir] of this.project.walk(
+      this.project.paths.source
+    )) {
+      if (!(path.endsWith(".ts") || path.endsWith(".tsx")) || isDir) {
+        continue;
+      }
       let code: string = (await FS.promises.readFile(path)).toString("utf-8");
       code = Prettier.format(code, {
         parser: "typescript",

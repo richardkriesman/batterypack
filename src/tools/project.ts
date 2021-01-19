@@ -58,38 +58,40 @@ export class Project {
   /**
    * Deletes all build outputs from the project.
    */
-  public clean(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      for (const path of [this.paths.build, this.paths.buildInfo]) {
-        rimraf(
-          path,
-          {
-            disableGlob: true,
-          },
-          (err: Error) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          }
-        );
+  public async clean(): Promise<void> {
+    // delete tsconfig.tsbuildinfo
+    try {
+      await FS.promises.unlink(this.paths.buildInfo);
+    } catch (err) {
+      if (err.code !== "ENOENT") {
+        // ignore if file doesn't exist
+        throw err;
       }
+    }
+
+    // delete build directory
+    await FS.promises.rmdir(this.paths.build, {
+      recursive: true,
     });
   }
 
   /**
-   * Recursively walks over all files in the project.
+   * Recursively walks over all files and directories in a path (the directory
+   * root by default).
+   *
+   * @yields A tuple containing a path to the node and a boolean indicating
+   *         whether the node is a directory.
    */
   public async *walk(
     basePath: string = this.paths.root
-  ): AsyncGenerator<string> {
+  ): AsyncGenerator<[string, boolean]> {
     for await (const node of await FS.promises.opendir(basePath)) {
       const path: string = Path.join(basePath, node.name);
       if (node.isDirectory()) {
+        yield [path, true];
         yield* this.walk(path);
       } else if (node.isFile()) {
-        yield path;
+        yield [path, false];
       }
     }
   }

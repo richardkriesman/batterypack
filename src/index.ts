@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import "source-map-support/register";
 import * as Commander from "commander";
 import { Subcommand } from "./subcommand";
@@ -7,7 +8,7 @@ import { CleanSubcommand } from "./subcommand/clean";
 const META = require("../package.json");
 
 // configure cli
-const program = new Commander.Command(META.name);
+const program = new Commander.Command("rocket");
 
 // register subcommands
 const subcommands: Subcommand[] = [
