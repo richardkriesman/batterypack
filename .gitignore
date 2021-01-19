@@ -1,8 +1,19 @@
-.idea/
+# macOS
 .DS_Store
 
-node_modules
+# Webstorm
+.idea/
 
+# Yarn
+node_modules
+yarn-error.log
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# TypeScript
 lib
 tsconfig.tsbuildinfo
-yarn-error.log
