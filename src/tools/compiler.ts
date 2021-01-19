@@ -7,7 +7,7 @@ import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
  * TypeScript compiler configuration. This is equivalent to what would be found
  * in tsconfig.json.
  */
-const CONFIG = {
+export const COMPILER_CONFIG = {
   compilerOptions: {
     allowJs: false,
     baseUrl: "./src",
@@ -22,7 +22,7 @@ const CONFIG = {
     noImplicitAny: true,
     noImplicitReturns: true,
     noImplicitThis: true,
-    outDir: "./lib",
+    outDir: "./build",
     paths: {
       "@project/*": ["*"],
     },
@@ -52,7 +52,7 @@ export class Compiler {
   public constructor(project: Project) {
     this.project = project;
     this.commandLine = TypeScript.parseJsonConfigFileContent(
-      CONFIG,
+      COMPILER_CONFIG,
       TypeScript.sys,
       this.project.paths.root
     );

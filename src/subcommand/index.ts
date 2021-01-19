@@ -8,6 +8,8 @@ export type SubcommandOpts = Omit<Commander.OptionValues, "project"> & {
 export abstract class Subcommand {
   public readonly commander: Commander.Command;
 
+  protected project: Project;
+
   public constructor(commander: Commander.Command) {
     this.commander = commander;
     this.commander
@@ -18,7 +20,7 @@ export abstract class Subcommand {
       )
       .action(async () => {
         const opts: SubcommandOpts | Commander.OptionValues = commander.opts();
-        opts.project = new Project((opts as Commander.OptionValues).project);
+        this.project = new Project((opts as Commander.OptionValues).project);
         await this.run(opts as SubcommandOpts);
       });
   }

@@ -1,4 +1,6 @@
+import * as FS from "fs";
 import * as Path from "path";
+import rimraf from "rimraf";
 
 export interface ProjectPaths {
   /**
@@ -11,6 +13,11 @@ export interface ProjectPaths {
    * for incremental builds.
    */
   readonly buildInfo: string;
+
+  /**
+   * Absolute path to the application entrypoint in TypeScript.
+   */
+  readonly entrypoint: string;
 
   /**
    * Absolute path to the root of the project.
@@ -42,8 +49,48 @@ export class Project {
     this.paths = {
       build: Path.join(root, "build"),
       buildInfo: Path.join(root, "tsconfig.tsbuildinfo"),
+      entrypoint: Path.join(root, "src", "index.ts"),
       root: root,
       source: Path.join(root, "src"),
     };
+  }
+
+  /**
+   * Deletes all build outputs from the project.
+   */
+  public clean(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      for (const path of [this.paths.build, this.paths.buildInfo]) {
+        rimraf(
+          path,
+          {
+            disableGlob: true,
+          },
+          (err: Error) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+          }
+        );
+      }
+    });
+  }
+
+  /**
+   * Recursively walks over all files in the project.
+   */
+  public async *walk(
+    basePath: string = this.paths.root
+  ): AsyncGenerator<string> {
+    for await (const node of await FS.promises.opendir(basePath)) {
+      const path: string = Path.join(basePath, node.name);
+      if (node.isDirectory()) {
+        yield* this.walk(path);
+      } else if (node.isFile()) {
+        yield path;
+      }
+    }
   }
 }

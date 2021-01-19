@@ -2,6 +2,7 @@ import "source-map-support/register";
 import * as Commander from "commander";
 import { Subcommand } from "./subcommand";
 import { BuildSubcommand } from "./subcommand/build";
+import { CleanSubcommand } from "./subcommand/clean";
 
 const META = require("../package.json");
 
@@ -10,7 +11,14 @@ const program = new Commander.Command(META.name);
 
 // register subcommands
 const subcommands: Subcommand[] = [
-  new BuildSubcommand(program.createCommand("build")),
+  new BuildSubcommand(
+    program
+      .createCommand("build")
+      .description("compile the project's source code")
+  ),
+  new CleanSubcommand(
+    program.createCommand("clean").description("delete build outputs")
+  ),
 ];
 for (const subcommand of subcommands) {
   program.addCommand(subcommand.commander);
