@@ -1,5 +1,5 @@
 import * as TypeScript from "typescript";
-import { Project } from "./project";
+import { PathResolver, ProjectPaths } from "../path";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
 
@@ -7,55 +7,51 @@ import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
  * TypeScript compiler configuration. This is equivalent to what would be found
  * in tsconfig.json.
  */
-export const COMPILER_CONFIG = {
-  compilerOptions: {
-    allowJs: false,
-    baseUrl: "./src",
-    declaration: true,
-    esModuleInterop: true,
-    emitDecoratorMetadata: true,
-    experimentalDecorators: true,
-    incremental: true,
-    lib: ["ES2020"],
-    module: "commonjs",
-    moduleResolution: "node",
-    noImplicitAny: true,
-    noImplicitReturns: true,
-    noImplicitThis: true,
-    outDir: "./build",
-    paths: {
-      "@project/*": ["*"],
+export async function makeCompilerConfig(resolver: PathResolver) {
+  return {
+    compilerOptions: {
+      allowJs: false,
+      baseUrl: await resolver.resolve(ProjectPaths.dirs.source),
+      declaration: true,
+      esModuleInterop: true,
+      emitDecoratorMetadata: true,
+      experimentalDecorators: true,
+      incremental: true,
+      lib: ["ES2020"],
+      module: "commonjs",
+      moduleResolution: "node",
+      noImplicitAny: true,
+      noImplicitReturns: true,
+      noImplicitThis: true,
+      outDir: await resolver.resolve(ProjectPaths.dirs.build),
+      paths: {
+        "@project/*": ["*"],
+      },
+      plugins: [{ transform: "ts-transformer-keys/transformer" }],
+      preserveConstEnums: true,
+      rootDir: "./src",
+      sourceMap: true,
+      strictBindCallApply: true,
+      strictFunctionTypes: true,
+      strictNullChecks: true,
+      stripInternal: true,
+      target: "ES2020",
+      tsBuildInfoFile: await resolver.resolve(ProjectPaths.files.buildInfo),
     },
-    plugins: [{ transform: "ts-transformer-keys/transformer" }],
-    preserveConstEnums: true,
-    rootDir: "./src",
-    sourceMap: true,
-    strictBindCallApply: true,
-    strictFunctionTypes: true,
-    strictNullChecks: true,
-    stripInternal: true,
-    target: "ES2020",
-    tsBuildInfoFile: "./tsconfig.tsbuildinfo",
-  },
-  include: ["src"],
-  exclude: ["node_modules", "**/__tests__/*"],
-};
+    include: [await resolver.resolve(ProjectPaths.dirs.source)],
+    exclude: ["node_modules", "**/__tests__/*"],
+  };
+}
 
 /**
- * Compiles a {@link Project}'s source code, written in TypeScript, to
+ * Compiles a {@link PathResolver}'s source code, written in TypeScript, to
  * JavaScript.
  */
 export class Compiler {
-  private readonly commandLine: TypeScript.ParsedCommandLine;
-  private readonly project: Project;
+  private readonly resolver: PathResolver;
 
-  public constructor(project: Project) {
-    this.project = project;
-    this.commandLine = TypeScript.parseJsonConfigFileContent(
-      COMPILER_CONFIG,
-      TypeScript.sys,
-      this.project.paths.root
-    );
+  public constructor(resolver: PathResolver) {
+    this.resolver = resolver;
   }
 
   /**
@@ -63,11 +59,18 @@ export class Compiler {
    * options, and discovering source files. This CompilationUnit can then be
    * compiled into a JavaScript program.
    */
-  public prepare(): CompilationUnit {
+  public async prepare(): Promise<CompilationUnit> {
+    // parse config
+    const commandLine = TypeScript.parseJsonConfigFileContent(
+      makeCompilerConfig(this.resolver),
+      TypeScript.sys,
+      await this.resolver.resolve(ProjectPaths.root)
+    );
+
     // create a program (in a compiler context)
     const program: TypeScript.Program = TypeScript.createProgram({
-      rootNames: this.commandLine.fileNames,
-      options: this.commandLine.options,
+      rootNames: commandLine.fileNames,
+      options: commandLine.options,
     });
 
     // build transformer factories

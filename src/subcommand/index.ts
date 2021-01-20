@@ -1,9 +1,5 @@
 import * as Commander from "commander";
-import { Project } from "../tools/project";
-
-export type SubcommandOpts = Omit<Commander.OptionValues, "project"> & {
-  project: Project;
-};
+import { Project } from "../project";
 
 export abstract class Subcommand {
   public readonly commander: Commander.Command;
@@ -19,11 +15,10 @@ export abstract class Subcommand {
         process.cwd()
       )
       .action(async () => {
-        const opts: SubcommandOpts | Commander.OptionValues = commander.opts();
-        this.project = new Project((opts as Commander.OptionValues).project);
-        await this.run(opts as SubcommandOpts);
+        this.project = await Project.open(commander.opts().project);
+        await this.run(commander.opts());
       });
   }
 
-  public abstract run(opts: SubcommandOpts): Promise<void>;
+  public abstract run(opts: Commander.OptionValues): Promise<void>;
 }

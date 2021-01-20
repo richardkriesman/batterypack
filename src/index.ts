@@ -3,7 +3,7 @@ import "source-map-support/register";
 import * as Commander from "commander";
 import { Subcommand } from "./subcommand";
 import { BuildSubcommand } from "./subcommand/build";
-import { CleanSubcommand } from "./subcommand/clean";
+import { SyncSubcommand } from "./subcommand/sync";
 
 const META = require("../package.json");
 
@@ -17,8 +17,10 @@ const subcommands: Subcommand[] = [
       .createCommand("build")
       .description("compile the project's source code")
   ),
-  new CleanSubcommand(
-    program.createCommand("clean").description("delete build outputs")
+  new SyncSubcommand(
+    program
+      .createCommand("sync")
+      .description("sync project configuration files")
   ),
 ];
 for (const subcommand of subcommands) {

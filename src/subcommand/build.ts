@@ -1,16 +1,16 @@
 import Chalk from "chalk";
-import * as Path from "path";
-import { Subcommand, SubcommandOpts } from "./index";
-import { CompilationUnit, Compiler, CompilerErrorSet } from "../tools/compiler";
+import * as Commander from "commander";
+import { Subcommand } from "./index";
+import { CompilationUnit, Compiler, CompilerErrorSet } from "../tool/compiler";
 import { withUiContext } from "../ui";
-import { CircularDependencyError, Detective } from "../tools/detective";
-import { Formatter } from "../tools/formatter";
+import { CircularDependencyError, Detective } from "../tool/detective";
+import { Formatter } from "../tool/formatter";
 
 export class BuildSubcommand extends Subcommand {
-  public async run(opts: SubcommandOpts): Promise<void> {
-    const compiler = new Compiler(this.project);
-    const detective = new Detective(this.project);
-    const formatter = new Formatter(this.project);
+  public async run(opts: Commander.OptionValues): Promise<void> {
+    const compiler = new Compiler(this.project.resolver);
+    const detective = new Detective(this.project.resolver);
+    const formatter = new Formatter(this.project.resolver);
 
     // format project source code
     await withUiContext("Formatting project", async () => {
@@ -30,15 +30,12 @@ export class BuildSubcommand extends Subcommand {
             // build full path for each file
             const paths: string[] = [];
             for (let i = 0; i < circle.length; i++) {
-              let fullPath: string = Path.join(
-                this.project.paths.source,
-                circle[i]
-              );
+              let path: string = circle[i];
               if (i === 0) {
                 // circle root, make it a different color
-                fullPath = Chalk.yellow.underline(fullPath);
+                path = Chalk.yellow.underline(path);
               }
-              paths.push(fullPath);
+              paths.push(path);
             }
 
             // build a formatted message for this circle
@@ -88,7 +85,7 @@ export class BuildSubcommand extends Subcommand {
             errorMessage.push(error.messageText);
             errorMessages.push(errorMessage.join(" "));
           }
-          return errorMessages.join("\n");
+          return errorMessages.join("\n\n");
         }
         return undefined;
       }

@@ -1,24 +1,25 @@
 import * as FS from "fs";
 import * as Prettier from "prettier";
-import { Project } from "./project";
+import { PathResolver, ProjectPaths } from "../path";
 
 /**
  * Formats the project's source code in the Prettier style.
  */
 export class Formatter {
-  private readonly project: Project;
+  private readonly resolver: PathResolver;
 
-  public constructor(project: Project) {
-    this.project = project;
+  public constructor(resolver: PathResolver) {
+    this.resolver = resolver;
   }
 
   /**
    * Formats the project's source code in the Prettier style.
    */
   public async format(): Promise<void> {
-    for await (const [path, isDir] of this.project.walk(
-      this.project.paths.source
-    )) {
+    const sourcePath: string = await this.resolver.resolve(
+      ProjectPaths.dirs.source
+    );
+    for await (const [path, isDir] of this.resolver.walk(sourcePath)) {
       if (!(path.endsWith(".ts") || path.endsWith(".tsx")) || isDir) {
         continue;
       }
