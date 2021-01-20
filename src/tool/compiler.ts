@@ -27,9 +27,8 @@ export async function makeCompilerConfig(resolver: PathResolver) {
       paths: {
         "@project/*": ["*"],
       },
-      plugins: [{ transform: "ts-transformer-keys/transformer" }],
       preserveConstEnums: true,
-      rootDir: "./src",
+      rootDir: await resolver.resolve(ProjectPaths.dirs.source),
       sourceMap: true,
       strictBindCallApply: true,
       strictFunctionTypes: true,
@@ -61,8 +60,9 @@ export class Compiler {
    */
   public async prepare(): Promise<CompilationUnit> {
     // parse config
+    const config = await makeCompilerConfig(this.resolver);
     const commandLine = TypeScript.parseJsonConfigFileContent(
-      makeCompilerConfig(this.resolver),
+      config,
       TypeScript.sys,
       await this.resolver.resolve(ProjectPaths.root)
     );

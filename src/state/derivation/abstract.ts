@@ -14,7 +14,10 @@ export interface Derivation {
    * project state.
    *
    * @param state Project state
-   * @param project Project manager
+   * @param resolver Project path resolver
    */
-  makeDerivation(state: DeepReadonly<State>, project: PathResolver): Buffer;
+  makeDerivation(
+    state: DeepReadonly<State>,
+    resolver: PathResolver
+  ): Promise<Buffer>;
 }

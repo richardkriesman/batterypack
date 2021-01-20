@@ -62,7 +62,7 @@ export class StateManager {
       });
       await FS.promises.writeFile(
         filePath,
-        derivation.makeDerivation(this.state, this.resolver)
+        await derivation.makeDerivation(this.state, this.resolver)
       );
     }
   }
