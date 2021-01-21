@@ -1,12 +1,12 @@
 {
   "name": "@anelto/rocket",
   "version": "0.1.0",
-  "main": "lib/index.js",
   "author": "Richard Kriesman <rkriesman@anelto.com>",
   "license": "UNLICENSED",
   "private": true,
-  "bin": "lib/index.js",
+  "bin": "lib/cli/rocket.js",
   "devDependencies": {
+    "@types/cli-table": "^0.3.0",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.20",
     "@types/js-yaml": "^4.0.0",
@@ -21,7 +21,9 @@
   },
   "dependencies": {
     "@zerollup/ts-transform-paths": "^1.7.18",
+    "aws-sdk": "^2.829.0",
     "chalk": "^4.1.0",
+    "cli-table": "^0.3.4",
     "commander": "^7.0.0",
     "js-yaml": "^4.0.0",
     "madge": "^4.0.0",

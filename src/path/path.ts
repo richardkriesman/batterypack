@@ -14,12 +14,14 @@ export const ProjectPaths: {
   root: ProjectPath;
   dirs: {
     build: ProjectPath;
+    derivations: ProjectPath;
     source: ProjectPath;
   };
   files: {
     buildInfo: ProjectPath;
+    config: ProjectPath;
+    credentials: ProjectPath;
     sourceEntrypoint: ProjectPath;
-    state: ProjectPath;
   };
 } = {
   root: {
@@ -31,6 +33,10 @@ export const ProjectPaths: {
       type: "directory",
       relPath: "/build",
     },
+    derivations: {
+      type: "directory",
+      relPath: "/.rocket",
+    },
     source: {
       type: "directory",
       relPath: "/src",
@@ -39,15 +45,19 @@ export const ProjectPaths: {
   files: {
     buildInfo: {
       type: "file",
-      relPath: "/.rocket/tsconfig.tsbuildinfo",
+      relPath: "/.rocket/typescript/tsconfig.tsbuildinfo",
+    },
+    config: {
+      type: "file",
+      relPath: "/rocket.yml",
+    },
+    credentials: {
+      type: "file",
+      relPath: "/.rocket/credentials.yml",
     },
     sourceEntrypoint: {
       type: "file",
       relPath: "/src/index.ts",
-    },
-    state: {
-      type: "file",
-      relPath: "/rocket.yml",
     },
   },
 };

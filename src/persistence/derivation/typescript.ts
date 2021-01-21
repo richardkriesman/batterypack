@@ -1,9 +1,11 @@
 import { Buffer } from "buffer";
 
 import { Derivation } from "./abstract";
-import { State } from "../state";
+import { Config } from "../config";
 import { PathResolver } from "../../path";
 import { makeCompilerConfig } from "../../tool/compiler";
+import { PersistenceFile } from "../file";
+import { Credentials } from "../credentials";
 
 /**
  * Builds a tsconfig.json file to configure TypeScript. This file doesn't
@@ -11,12 +13,12 @@ import { makeCompilerConfig } from "../../tool/compiler";
  * for configuring IDEs.
  */
 export class TypeScriptDerivation implements Derivation {
-  public getFilePath(): string {
-    return "tsconfig.json";
-  }
+  filePath = "tsconfig.json";
+  toolId = "typescript";
 
   public async makeDerivation(
-    state: State,
+    config: PersistenceFile<Config>,
+    credentials: PersistenceFile<Credentials>,
     resolver: PathResolver
   ): Promise<Buffer> {
     const contents = {

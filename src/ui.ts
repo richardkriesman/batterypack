@@ -1,4 +1,66 @@
+import * as Commander from "commander";
 import Ora from "ora";
+import Table from "cli-table";
+import { Project } from "./project";
+
+/**
+ * Configures and runs this process as a Rocket subcommand.
+ *
+ * @param run The subcommand function.
+ * @param configure A function which configures the {@link Commander.Command}.
+ */
+export function asSubcommand(
+  run: (project: Project, opts: Commander.OptionValues) => Promise<void>,
+  configure?: (command: Commander.Command) => void
+): void {
+  if (configure !== undefined) {
+    configure(Commander.program);
+  }
+  Commander.program
+    .option(
+      "--project <project>",
+      "path to the project's root directory",
+      process.cwd()
+    )
+    .action(async () => {
+      const project: Project = await Project.open(
+        Commander.program.opts().project
+      );
+      await run(project, Commander.program.opts());
+    })
+    .parse();
+}
+
+/**
+ * Prints a table with dynamic column widths.
+ */
+export function printTable(options: {
+  headers: string[];
+  data: string[][];
+}): void {
+  // determine width of longest cell for each column
+  const colWidths: number[] = [];
+  for (const col of options.headers) {
+    colWidths.push(0);
+  }
+  for (const row of [options.headers].concat(options.data)) {
+    for (let i = 0; i < row.length; i++) {
+      if (row[i].length > colWidths[i]) {
+        colWidths[i] = row[i].length + 2; // +2 for padding on edges
+      }
+    }
+  }
+
+  // build table
+  const table = new Table({
+    head: options.headers,
+    colWidths: colWidths,
+  });
+  table.push(...options.data);
+
+  // print table
+  console.log(table.toString());
+}
 
 /**
  * Displays a spinner which runs in the background and then awaits an operation.
