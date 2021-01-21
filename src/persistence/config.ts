@@ -1,5 +1,5 @@
 import { PathResolver, ProjectPaths } from "../path";
-import { PersistenceFile, YamlFile } from "./file";
+import { LoadedStore, YamlStore } from "./store";
 
 /**
  * Project persistence representation. Rocket uses this persistence to build derivations
@@ -36,24 +36,28 @@ export interface Config {
 /**
  * Reads and writes the project {@link Config}.
  */
-export class ConfigFile extends YamlFile<Config> {
+export class ConfigFile extends YamlStore<Config> {
   /**
    * Opens a {@link ConfigFile}, creating the persistence file if it does not
    * already exist.
    */
   public static async open(
     resolver: PathResolver
-  ): Promise<PersistenceFile<Config>> {
-    const statePath: string = await resolver.resolve(ProjectPaths.files.config);
-    let state: Config | undefined = await super.readFile<Config>(statePath);
-    if (state === undefined) {
-      state = {
+  ): Promise<LoadedStore<ConfigFile, Config>> {
+    const configPath: string = await resolver.resolve(
+      ProjectPaths.files.config
+    );
+    let config: Config | undefined = await super.readData<Config>(configPath);
+    if (config === undefined) {
+      config = {
         gitignore: [],
         yarn: {
           linker: "pnp",
         },
       };
     }
-    return super.bindDynamicAccessors(new ConfigFile(statePath, state));
+    return super.bindDynamicAccessors<ConfigFile, Config>(
+      new ConfigFile(config, configPath)
+    );
   }
 }

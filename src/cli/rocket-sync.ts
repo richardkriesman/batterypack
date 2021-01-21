@@ -17,11 +17,10 @@ asSubcommand(async (project) => {
     ];
     derivations.push(new GitIgnoreDerivation(derivations));
 
+    // flush persistence files
+    await project.flush();
+
     // make derivations
-    await new DerivationBuilder(
-      project.config,
-      project.credentials,
-      project.resolver
-    ).makeDerivations(derivations);
+    await new DerivationBuilder(project).makeDerivations(derivations);
   });
 });

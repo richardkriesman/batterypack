@@ -48,3 +48,17 @@ export function when<T, O extends { [key: string]: unknown }>(
       : out
     : {};
 }
+
+/**
+ * Works identically to {@link when}, but `out` is an async function.
+ */
+export async function whenAsync<T, O extends { [key: string]: unknown }>(
+  target: T,
+  out: (target: NonNullable<T>) => Promise<O>
+): Promise<Partial<O>> {
+  return target !== undefined && target !== null
+    ? typeof out === "function"
+      ? await out(target!)
+      : out
+    : {};
+}

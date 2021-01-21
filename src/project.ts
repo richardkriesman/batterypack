@@ -4,7 +4,7 @@ import {
   ConfigFile,
   Credentials,
   CredentialsFile,
-  PersistenceFile,
+  LoadedStore,
 } from "./persistence";
 
 /**
@@ -20,17 +20,21 @@ export class Project {
     );
   }
 
-  public readonly config: PersistenceFile<Config>;
-  public readonly credentials: PersistenceFile<Credentials>;
+  public readonly config: LoadedStore<ConfigFile, Config>;
+  public readonly credentials: LoadedStore<CredentialsFile, Credentials>;
   public readonly resolver: PathResolver;
 
   private constructor(
     resolver: PathResolver,
-    config: PersistenceFile<Config>,
-    credentials: PersistenceFile<Credentials>
+    config: LoadedStore<ConfigFile, Config>,
+    credentials: LoadedStore<CredentialsFile, Credentials>
   ) {
     this.config = config;
     this.credentials = credentials;
     this.resolver = resolver;
+  }
+
+  public flush(): Promise<[void, void]> {
+    return Promise.all([this.config.flush(), this.credentials.flush()]);
   }
 }

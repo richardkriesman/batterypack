@@ -2,27 +2,16 @@ import * as FS from "fs";
 import * as Path from "path";
 import { Derivation } from "./abstract";
 import { doesFileExist } from "../../helpers";
-import { PersistenceFile } from "../file";
-import { Config } from "../config";
-import { Credentials } from "../credentials";
-import { PathResolver } from "../../path";
+import { Project } from "../../project";
 
 /**
  * Builds derivation files.
  */
 export class DerivationBuilder {
-  private readonly config: PersistenceFile<Config>;
-  private readonly credentials: PersistenceFile<Credentials>;
-  private readonly resolver: PathResolver;
+  private readonly project: Project;
 
-  public constructor(
-    config: PersistenceFile<Config>,
-    credentials: PersistenceFile<Credentials>,
-    resolver: PathResolver
-  ) {
-    this.config = config;
-    this.credentials = credentials;
-    this.resolver = resolver;
+  public constructor(project: Project) {
+    this.project = project;
   }
 
   /**
@@ -31,11 +20,11 @@ export class DerivationBuilder {
   public async makeDerivations(derivations: Derivation[]): Promise<void> {
     for (const derivation of derivations) {
       // resolve file paths for the original file in the store and the symlink
-      const storePath: string = await this.resolver.resolve({
+      const storePath: string = await this.project.resolver.resolve({
         type: "file",
         relPath: Path.join(".rocket", derivation.toolId, derivation.filePath),
       });
-      const linkPath: string = await this.resolver.resolve({
+      const linkPath: string = await this.project.resolver.resolve({
         type: "file",
         relPath: derivation.filePath,
       });
@@ -43,11 +32,7 @@ export class DerivationBuilder {
       // write file to derivation store
       await FS.promises.writeFile(
         storePath,
-        await derivation.makeDerivation(
-          this.config,
-          this.credentials,
-          this.resolver
-        )
+        await derivation.makeDerivation(this.project)
       );
 
       // link to file in derivation store
