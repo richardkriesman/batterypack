@@ -1,0 +1,124 @@
+{
+  "$id": "https://richardkriesman.com/schemas/rocket-config.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Rocket configuration",
+  "type": "object",
+  "examples": [
+    {
+      "gitignore": [
+        "/build"
+      ],
+      "scopes": {
+        "scope": {
+          "origin": "https://registry.example.com",
+          "credential": "my-credential"
+        }
+      },
+      "yarn": {
+        "linker": "pnp"
+      }
+    }
+  ],
+  "required": [
+    "gitignore",
+    "yarn"
+  ],
+  "properties": {
+    "gitignore": {
+      "$id": "#/properties/gitignore",
+      "title": "Additional gitignore rules",
+      "type": "array",
+      "examples": [
+        [
+          "/build"
+        ]
+      ],
+      "items": {
+        "$id": "#/properties/gitignore/items",
+        "type": "string",
+        "examples": [
+          "/build"
+        ]
+      },
+      "uniqueItems": true,
+      "additionalItems": true
+    },
+    "scopes": {
+      "$id": "#/properties/scopes",
+      "title": "Scoped registries",
+      "description": "Define specific registries to use for package scopes.",
+      "type": "object",
+      "examples": [
+        {
+          "scope": {
+            "origin": "https://registry.example.com",
+            "credential": "my-credential"
+          }
+        }
+      ],
+      "additionalProperties": {
+        "$id": "#/properties/scopes/additionalProperties",
+        "type": "object",
+        "examples": [
+          {
+            "origin": "https://registry.example.com",
+            "credential": "my-credential"
+          }
+        ],
+        "required": [
+          "origin"
+        ],
+        "properties": {
+          "origin": {
+            "$id": "#/properties/scopes/additionalProperties/properties/origin",
+            "type": "string",
+            "title": "Registry server origin",
+            "examples": [
+              "https://registry.example.com"
+            ]
+          },
+          "credential": {
+            "$id": "#/properties/scopes/additionalProperties/properties/credential",
+            "type": "string",
+            "title": "Credential name",
+            "description": "The name of the credential stored in .rocket/credentials.yml",
+            "examples": [
+              "my-credential"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "yarn": {
+      "$id": "#/properties/yarn",
+      "title": "Yarn-specific configuration",
+      "type": "object",
+      "examples": [
+        {
+          "linker": "pnp"
+        }
+      ],
+      "required": [
+        "linker"
+      ],
+      "properties": {
+        "linker": {
+          "$id": "#/properties/yarn/properties/linker",
+          "title": "Module linker type",
+          "type": "string",
+          "examples": [
+            "pnp",
+            "node-modules"
+          ],
+          "enum": [
+            "pnp",
+            "node-modules"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

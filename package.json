@@ -31,8 +31,5 @@
     "prettier": "^2.2.1",
     "source-map-support": "^0.5.19",
     "ts-transformer-keys": "^0.4.3"
-  },
-  "resolutions": {
-    "@anelto/rocket": "portal:/Users/rkriesman/WebstormProjects/rocket"
   }
 }
