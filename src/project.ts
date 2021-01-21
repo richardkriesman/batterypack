@@ -1,4 +1,5 @@
-import { PathResolver } from "./path";
+import * as Path from "path";
+import { PathResolver, ProjectPaths } from "./path";
 import {
   Config,
   ConfigFile,
@@ -32,6 +33,18 @@ export class Project {
     this.config = config;
     this.credentials = credentials;
     this.resolver = resolver;
+  }
+
+  /**
+   * Gets the currently configured source code entrypoint.
+   */
+  public async getSourceEntrypoint(): Promise<string> {
+    return this.config.entrypoint
+      ? Path.join(
+          await this.resolver.resolve(ProjectPaths.root),
+          this.config.entrypoint
+        )
+      : await this.resolver.resolve(ProjectPaths.files.defaultSourceEntrypoint);
   }
 
   public flush(): Promise<[void, void]> {

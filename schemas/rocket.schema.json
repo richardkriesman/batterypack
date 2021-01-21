@@ -5,6 +5,7 @@
   "type": "object",
   "examples": [
     {
+      "entrypoint": "src/index.ts",
       "gitignore": [
         "/build"
       ],
@@ -24,6 +25,15 @@
     "yarn"
   ],
   "properties": {
+    "entrypoint": {
+      "$id": "#/properties/entrypoint",
+      "title": "Program entrypoint",
+      "description": "Program entrypoint relative to the project root.",
+      "type": "string",
+      "examples": [
+        "src/index.ts"
+      ]
+    },
     "gitignore": {
       "$id": "#/properties/gitignore",
       "title": "Additional gitignore rules",

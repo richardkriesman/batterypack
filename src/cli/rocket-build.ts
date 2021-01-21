@@ -7,7 +7,7 @@ import { Formatter } from "../tool/formatter";
 
 asSubcommand(async (project) => {
   const compiler = new Compiler(project.resolver);
-  const detective = new Detective(project.resolver);
+  const detective = new Detective(project);
   const formatter = new Formatter(project.resolver);
 
   // format project source code

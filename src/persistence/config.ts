@@ -7,6 +7,11 @@ import { LoadedStore, YamlStore } from "./store";
  */
 export interface Config {
   /**
+   * Program entrypoint relative to the base directory.
+   */
+  entrypoint?: string;
+
+  /**
    * ignore rules
    */
   gitignore: string[];

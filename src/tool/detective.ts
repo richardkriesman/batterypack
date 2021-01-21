@@ -1,15 +1,16 @@
 import madge from "madge";
 import { makeCompilerConfig } from "./compiler";
-import { PathResolver, ProjectPaths } from "../path";
+import { ProjectPaths } from "../path";
+import { Project } from "../project";
 
 /**
  * Analyzes the project's source code to detect potential issues.
  */
 export class Detective {
-  private readonly resolver: PathResolver;
+  private readonly project: Project;
 
-  public constructor(resolver: PathResolver) {
-    this.resolver = resolver;
+  public constructor(project: Project) {
+    this.project = project;
   }
 
   /**
@@ -18,11 +19,9 @@ export class Detective {
    * @throws DetectiveError - Circular dependencies were detected.
    */
   public async assertNoCircularDependencies(): Promise<void> {
-    const entrypointPath: string = await this.resolver.resolve(
-      ProjectPaths.files.sourceEntrypoint
-    );
+    const entrypointPath: string = await this.project.getSourceEntrypoint();
     const madgeObj = await madge(entrypointPath, {
-      tsConfig: makeCompilerConfig(this.resolver),
+      tsConfig: makeCompilerConfig(this.project.resolver),
       fileExtensions: ["ts", "tsx"],
     });
     const circles: string[][] = madgeObj.circular();

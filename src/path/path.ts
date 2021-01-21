@@ -21,7 +21,7 @@ export const ProjectPaths: {
     buildInfo: ProjectPath;
     config: ProjectPath;
     credentials: ProjectPath;
-    sourceEntrypoint: ProjectPath;
+    defaultSourceEntrypoint: ProjectPath;
   };
 } = {
   root: {
@@ -55,7 +55,7 @@ export const ProjectPaths: {
       type: "file",
       relPath: "/.rocket/credentials.yml",
     },
-    sourceEntrypoint: {
+    defaultSourceEntrypoint: {
       type: "file",
       relPath: "/src/index.ts",
     },
