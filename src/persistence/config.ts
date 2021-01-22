@@ -17,6 +17,12 @@ export interface Config {
   gitignore: string[];
 
   /**
+   * Name of the project. This will be used when naming the executable in
+   * bundled builds.
+   */
+  name?: string;
+
+  /**
    * Registries can be configured on a per-scope basis by adding them here.
    * Scope names should be added without the @ prefix.
    *

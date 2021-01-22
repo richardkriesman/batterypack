@@ -53,6 +53,14 @@
       "uniqueItems": true,
       "additionalItems": true
     },
+    "name": {
+      "$id": "#/properties/name",
+      "title": "Project name",
+      "type": "string",
+      "examples": [
+        "my-program"
+      ]
+    },
     "scopes": {
       "$id": "#/properties/scopes",
       "title": "Scoped registries",

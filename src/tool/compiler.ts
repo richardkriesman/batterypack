@@ -1,7 +1,10 @@
+import * as Nexe from "nexe";
+import * as Path from "path";
 import * as TypeScript from "typescript";
 import { PathResolver, ProjectPaths } from "../path";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
+import { Project } from "../project";
 
 /**
  * TypeScript compiler configuration. This is equivalent to what would be found
@@ -44,13 +47,13 @@ export async function makeCompilerConfig(resolver: PathResolver) {
 
 /**
  * Compiles a {@link PathResolver}'s source code, written in TypeScript, to
- * JavaScript.
+ * JavaScript or into an executable.
  */
 export class Compiler {
-  private readonly resolver: PathResolver;
+  private readonly project: Project;
 
-  public constructor(resolver: PathResolver) {
-    this.resolver = resolver;
+  public constructor(project: Project) {
+    this.project = project;
   }
 
   /**
@@ -60,11 +63,11 @@ export class Compiler {
    */
   public async prepare(): Promise<CompilationUnit> {
     // parse config
-    const config = await makeCompilerConfig(this.resolver);
+    const config = await makeCompilerConfig(this.project.resolver);
     const commandLine = TypeScript.parseJsonConfigFileContent(
       config,
       TypeScript.sys,
-      await this.resolver.resolve(ProjectPaths.root)
+      await this.project.resolver.resolve(ProjectPaths.root)
     );
 
     // create a program (in a compiler context)
@@ -80,7 +83,7 @@ export class Compiler {
       before: [createKeyTransformer(program), pathTransformer.before!],
     };
 
-    return new CompilationUnit(program, transformers);
+    return new CompilationUnit(this.project, program, transformers);
   }
 }
 
@@ -89,13 +92,16 @@ export class Compiler {
  * of source files and compiler options.
  */
 export class CompilationUnit {
+  private readonly project: Project;
   private readonly program: TypeScript.Program;
   private readonly transformers: TypeScript.CustomTransformers;
 
   public constructor(
+    project: Project,
     program: TypeScript.Program,
     transformers: TypeScript.CustomTransformers
   ) {
+    this.project = project;
     this.program = program;
     this.transformers = transformers;
   }
@@ -105,7 +111,7 @@ export class CompilationUnit {
    *
    * @throws CompilerErrorSet - Compiler errors were encountered during build.
    */
-  public build(): void {
+  public build(): Artifact {
     // emit output files
     const result: TypeScript.EmitResult = this.program.emit(
       undefined,
@@ -127,6 +133,35 @@ export class CompilationUnit {
     if (errors.length > 0) {
       throw new CompilerErrorSet(errors);
     }
+
+    return new Artifact(result, this.project);
+  }
+}
+
+/**
+ * Performs post-compilation actions on compiled code.
+ */
+export class Artifact {
+  private readonly emitResult: TypeScript.EmitResult;
+  private readonly project: Project;
+
+  public constructor(emitResult: TypeScript.EmitResult, project: Project) {
+    this.emitResult = emitResult;
+    this.project = project;
+  }
+
+  /**
+   * Bundles the compiled JavaScript code into a single executable.
+   */
+  public async bundle(): Promise<void> {
+    await Nexe.compile({
+      input: await this.project.resolver.resolve(
+        ProjectPaths.files.buildEntrypoint
+      ),
+      output: this.project.config.name ?? "bundle",
+      enableNodeCli: false,
+      loglevel: "silent",
+    });
   }
 }
 

@@ -18,6 +18,7 @@ export const ProjectPaths: {
     source: ProjectPath;
   };
   files: {
+    buildEntrypoint: ProjectPath;
     buildInfo: ProjectPath;
     config: ProjectPath;
     credentials: ProjectPath;
@@ -44,6 +45,10 @@ export const ProjectPaths: {
     },
   },
   files: {
+    buildEntrypoint: {
+      type: "file",
+      relPath: "/build/index.js",
+    },
     buildInfo: {
       type: "file",
       relPath: "/.rocket/typescript/tsconfig.tsbuildinfo",
