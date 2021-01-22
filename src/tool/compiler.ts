@@ -1,5 +1,3 @@
-import * as Nexe from "nexe";
-import * as Path from "path";
 import * as TypeScript from "typescript";
 import { PathResolver, ProjectPaths } from "../path";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
@@ -111,7 +109,7 @@ export class CompilationUnit {
    *
    * @throws CompilerErrorSet - Compiler errors were encountered during build.
    */
-  public build(): Artifact {
+  public build(): void {
     // emit output files
     const result: TypeScript.EmitResult = this.program.emit(
       undefined,
@@ -133,35 +131,6 @@ export class CompilationUnit {
     if (errors.length > 0) {
       throw new CompilerErrorSet(errors);
     }
-
-    return new Artifact(result, this.project);
-  }
-}
-
-/**
- * Performs post-compilation actions on compiled code.
- */
-export class Artifact {
-  private readonly emitResult: TypeScript.EmitResult;
-  private readonly project: Project;
-
-  public constructor(emitResult: TypeScript.EmitResult, project: Project) {
-    this.emitResult = emitResult;
-    this.project = project;
-  }
-
-  /**
-   * Bundles the compiled JavaScript code into a single executable.
-   */
-  public async bundle(): Promise<void> {
-    await Nexe.compile({
-      input: await this.project.resolver.resolve(
-        ProjectPaths.files.buildEntrypoint
-      ),
-      output: this.project.config.name ?? "bundle",
-      enableNodeCli: false,
-      loglevel: "silent",
-    });
   }
 }
 

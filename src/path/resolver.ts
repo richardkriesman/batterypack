@@ -47,7 +47,7 @@ export class PathResolver {
 
   /**
    * Recursively walks over all files and directories in a path (the project
-   * root by default).
+   * root by default). Paths are absolute.
    *
    * @yields A tuple containing a path to the node and a boolean indicating
    *         whether the node is a directory.

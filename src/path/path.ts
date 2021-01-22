@@ -18,11 +18,11 @@ export const ProjectPaths: {
     source: ProjectPath;
   };
   files: {
-    buildEntrypoint: ProjectPath;
+    defaultBuildEntrypoint: ProjectPath;
+    defaultSourceEntrypoint: ProjectPath;
     buildInfo: ProjectPath;
     config: ProjectPath;
     credentials: ProjectPath;
-    defaultSourceEntrypoint: ProjectPath;
     internalState: ProjectPath;
   };
 } = {
@@ -45,9 +45,13 @@ export const ProjectPaths: {
     },
   },
   files: {
-    buildEntrypoint: {
+    defaultBuildEntrypoint: {
       type: "file",
       relPath: "/build/index.js",
+    },
+    defaultSourceEntrypoint: {
+      type: "file",
+      relPath: "/src/index.ts",
     },
     buildInfo: {
       type: "file",
@@ -60,10 +64,6 @@ export const ProjectPaths: {
     credentials: {
       type: "file",
       relPath: "/.rocket/credentials.yml",
-    },
-    defaultSourceEntrypoint: {
-      type: "file",
-      relPath: "/src/index.ts",
     },
     internalState: {
       type: "file",

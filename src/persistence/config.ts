@@ -7,9 +7,13 @@ import { LoadedStore, YamlStore } from "./store";
  */
 export interface Config {
   /**
-   * Program entrypoint relative to the base directory.
+   * Program entrypoint for both the source and compiled code relative to the
+   * base directory.
    */
-  entrypoint?: string;
+  entrypoint?: {
+    build: string;
+    source: string;
+  };
 
   /**
    * ignore rules
@@ -17,8 +21,7 @@ export interface Config {
   gitignore: string[];
 
   /**
-   * Name of the project. This will be used when naming the executable in
-   * bundled builds.
+   * Name of the project.
    */
   name?: string;
 

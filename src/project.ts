@@ -46,11 +46,23 @@ export class Project {
   /**
    * Gets the currently configured source code entrypoint.
    */
+  public async getBuildEntrypoint(): Promise<string> {
+    return this.config.entrypoint
+      ? Path.join(
+          await this.resolver.resolve(ProjectPaths.root),
+          this.config.entrypoint.build
+        )
+      : await this.resolver.resolve(ProjectPaths.files.defaultBuildEntrypoint);
+  }
+
+  /**
+   * Gets the currently configured source code entrypoint.
+   */
   public async getSourceEntrypoint(): Promise<string> {
     return this.config.entrypoint
       ? Path.join(
           await this.resolver.resolve(ProjectPaths.root),
-          this.config.entrypoint
+          this.config.entrypoint.source
         )
       : await this.resolver.resolve(ProjectPaths.files.defaultSourceEntrypoint);
   }

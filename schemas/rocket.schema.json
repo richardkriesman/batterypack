@@ -5,7 +5,10 @@
   "type": "object",
   "examples": [
     {
-      "entrypoint": "src/index.ts",
+      "entrypoint": {
+        "build": "build/index.js",
+        "source": "src/index.tsx"
+      },
       "gitignore": [
         "/build"
       ],
@@ -28,11 +31,36 @@
     "entrypoint": {
       "$id": "#/properties/entrypoint",
       "title": "Program entrypoint",
-      "description": "Program entrypoint relative to the project root.",
-      "type": "string",
+      "description": "Program entrypoint for compiled and source code relative to the project root.",
+      "type": "object",
       "examples": [
-        "src/index.ts"
-      ]
+        {
+          "build": "build/index.js",
+          "source": "src/index.tsx"
+        }
+      ],
+      "required": [
+        "build",
+        "source"
+      ],
+      "properties": {
+        "build": {
+          "$id": "#/properties/entrypoint/properties/build",
+          "title": "Build entrypoint",
+          "type": "string",
+          "examples": [
+            "build/index.js"
+          ]
+        },
+        "source": {
+          "$id": "#/properties/entrypoint/properties/source",
+          "title": "Source entrypoint",
+          "type": "string",
+          "examples": [
+            "src/index.tsx"
+          ]
+        }
+      }
     },
     "gitignore": {
       "$id": "#/properties/gitignore",
