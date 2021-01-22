@@ -2,7 +2,7 @@ import * as Crypto from "crypto";
 import * as FS from "fs";
 import * as Path from "path";
 import * as XXH from "xxhashjs";
-import { PathResolver, ProjectPaths } from "./path";
+import { PathResolver, ProjectPaths } from "./paths";
 import {
   Config,
   ConfigFile,

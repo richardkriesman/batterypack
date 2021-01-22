@@ -1,6 +1,6 @@
 import * as FS from "fs";
 import * as Prettier from "prettier";
-import { PathResolver, ProjectPaths } from "../path";
+import { PathResolver, ProjectPaths } from "../paths";
 
 /**
  * Formats the project's source code in the Prettier style.

@@ -1,5 +1,5 @@
 import * as TypeScript from "typescript";
-import { PathResolver, ProjectPaths } from "../path";
+import { PathResolver, ProjectPaths } from "../paths";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
 import { Project } from "../project";

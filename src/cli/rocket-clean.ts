@@ -1,7 +1,7 @@
 import * as FS from "fs";
 import * as Path from "path";
 import { asSubcommand, withUiContext } from "../ui";
-import { ProjectPaths } from "../path";
+import { ProjectPaths } from "../paths";
 
 asSubcommand(async (project) => {
   await withUiContext("Deleting build artifacts", async () => {

@@ -35,7 +35,7 @@ __metadata:
     typescript: ^4.1.3
     xxhashjs: ^0.2.2
   bin:
-    rocket: lib/cli/rocket.js
+    rocket: build/cli/rocket.js
   languageName: unknown
   linkType: soft
 

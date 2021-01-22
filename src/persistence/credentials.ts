@@ -1,5 +1,5 @@
 import { CodeArtifact, SharedIniFileCredentials } from "aws-sdk";
-import { PathResolver, ProjectPaths } from "../path";
+import { PathResolver, ProjectPaths } from "../paths";
 import { LoadedStore, YamlStore } from "./store";
 
 /**

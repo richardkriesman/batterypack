@@ -1,4 +1,4 @@
-import { PathResolver, ProjectPaths } from "../path";
+import { PathResolver, ProjectPaths } from "../paths";
 import { LoadedStore, YamlStore } from "./store";
 
 /**
