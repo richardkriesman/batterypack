@@ -1,6 +1,5 @@
 import madge from "madge";
 import { makeCompilerConfig } from "./compiler";
-import { ProjectPaths } from "../path";
 import { Project } from "../project";
 
 /**

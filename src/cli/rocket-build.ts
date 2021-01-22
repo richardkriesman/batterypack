@@ -10,6 +10,19 @@ asSubcommand(async (project) => {
   const detective = new Detective(project);
   const formatter = new Formatter(project.resolver);
 
+  // skip building if the fingerprint of the source directory matches
+  const [sourceFingerprint, currentFingerprint] = await withUiContext<
+    [string | undefined, string]
+  >("Checking for changes", async () => {
+    return [
+      project.internal.sourceFingerprint,
+      await project.getSourceFingerprint(),
+    ];
+  });
+  if (sourceFingerprint === currentFingerprint) {
+    return;
+  }
+
   // format project source code
   await withUiContext("Formatting project", async () => {
     await formatter.format();
@@ -88,4 +101,10 @@ asSubcommand(async (project) => {
       return undefined;
     }
   );
+
+  // update hash
+  await withUiContext("Updating source fingerprint", async () => {
+    project.internal.sourceFingerprint = await project.getSourceFingerprint();
+    await project.internal.flush();
+  });
 });
