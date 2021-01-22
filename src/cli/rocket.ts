@@ -8,6 +8,7 @@ const META = require("../../package.json");
 Commander.program
   .version(META.version)
   .command("build", "compile project source code")
+  .command("clean", "delete build artifacts")
   .command("credentials", "manage user credentials")
   .command("sync", "sync project configuration files")
   .parse();
