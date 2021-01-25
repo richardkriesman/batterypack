@@ -3,8 +3,28 @@
  * {@link ProjectPaths}.
  */
 export interface ProjectPath {
+  /**
+   * Node type
+   */
   type: "directory" | "file";
+
+  /**
+   * Relative path from the project root
+   */
   relPath: string;
+
+  /**
+   * Whether this path can be hoisted. By default, this option is disabled.
+   *
+   * When disabled, a {@link PathResolver} will create a directory path if it
+   * does not exist relative to the project root.
+   *
+   * When enabled, a {@link PathResolver} will traverse upwards from the
+   * project root, attempting to resolve the path relative to that directory.
+   * Only if no path can be found will a directory path be created, which will
+   * be relative to the project root.
+   */
+  hoist?: boolean;
 }
 
 /**
@@ -28,46 +48,47 @@ export const ProjectPaths: {
 } = {
   root: {
     type: "directory",
-    relPath: "/",
+    relPath: "",
   },
   dirs: {
     build: {
       type: "directory",
-      relPath: "/build",
+      relPath: "build",
     },
     derivations: {
       type: "directory",
-      relPath: "/.rocket",
+      relPath: ".rocket",
     },
     source: {
       type: "directory",
-      relPath: "/src",
+      relPath: "src",
     },
   },
   files: {
     defaultBuildEntrypoint: {
       type: "file",
-      relPath: "/build/index.js",
+      relPath: "build/index.js",
     },
     defaultSourceEntrypoint: {
       type: "file",
-      relPath: "/src/index.ts",
+      relPath: "src/index.ts",
     },
     buildInfo: {
       type: "file",
-      relPath: "/.rocket/typescript/tsconfig.tsbuildinfo",
+      relPath: ".rocket/typescript/tsconfig.tsbuildinfo",
     },
     config: {
       type: "file",
-      relPath: "/rocket.yml",
+      relPath: "rocket.yml",
     },
     credentials: {
       type: "file",
-      relPath: "/.rocket/credentials.yml",
+      relPath: ".rocket/credentials.yml",
+      hoist: true,
     },
     internalState: {
       type: "file",
-      relPath: "/.rocket/internal.yml",
+      relPath: ".rocket/internal.yml",
     },
   },
 };

@@ -21,11 +21,8 @@ export class YarnDerivation implements Derivation {
 #
 `;
     contents += YAML.dump({
-      // path to the yarn executable
       yarnPath: ".yarn/releases/yarn-berry.cjs",
-
-      // linker type - whether to use PnP or node_modules
-      nodeLinker: project.config.yarn.linker,
+      nodeLinker: "node-modules", // rocket doesn't support PnP at the moment
 
       // registry scopes
       ...(await whenAsync(project.config.scopes, async (target) => {

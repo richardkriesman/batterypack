@@ -53,12 +53,12 @@ tsconfig.tsbuildinfo
 
     // add derivation files to gitignore - rocket manages these
     contents += this.derivations
-      .map((derivation) => `${derivation.filePath}\n`)
+      .map((derivation) => `/${derivation.filePath}\n`)
       .join("");
 
     // add custom rules
     contents += ["\n# Custom rules\n"]
-      .concat(project.config.gitignore.map((rule) => `${rule}\n`))
+      .concat(project.config.gitignore?.map((rule) => `${rule}\n`) ?? [])
       .join("");
 
     return Buffer.from(contents, "utf-8");

@@ -18,14 +18,10 @@
           "credential": "my-credential"
         }
       },
-      "yarn": {
-        "linker": "pnp"
-      }
+      "subprojects": [
+        "subproject-a"
+      ]
     }
-  ],
-  "required": [
-    "gitignore",
-    "yarn"
   ],
   "properties": {
     "entrypoint": {
@@ -136,34 +132,23 @@
         "additionalProperties": true
       }
     },
-    "yarn": {
-      "$id": "#/properties/yarn",
-      "title": "Yarn-specific configuration",
-      "type": "object",
+    "subprojects": {
+      "$id": "#/properties/subprojects",
+      "title": "Subprojects",
+      "type": "array",
       "examples": [
-        {
-          "linker": "pnp"
-        }
+        [
+          "subproject-a",
+          "subproject-b"
+        ]
       ],
-      "required": [
-        "linker"
-      ],
-      "properties": {
-        "linker": {
-          "$id": "#/properties/yarn/properties/linker",
-          "title": "Module linker type",
-          "type": "string",
-          "examples": [
-            "pnp",
-            "node-modules"
-          ],
-          "enum": [
-            "pnp",
-            "node-modules"
-          ]
-        }
-      },
-      "additionalProperties": true
+      "items": {
+        "$id": "#/properties/subprojects/items",
+        "type": "string",
+        "examples": [
+          "subproject-a"
+        ]
+      }
     }
   },
   "additionalProperties": true

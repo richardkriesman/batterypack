@@ -1,6 +1,7 @@
 import * as FS from "fs";
 import * as Path from "path";
 import { ProjectPath } from "./path";
+import { doesDirExist, doesFileExist } from "../helpers";
 
 /**
  * Resolves paths for a Rocket project.
@@ -29,18 +30,45 @@ export class PathResolver {
   public async resolve(path?: ProjectPath): Promise<string> {
     path = path || {
       type: "directory",
-      relPath: "/",
+      relPath: "",
     };
-    const absPath: string = Path.normalize(
-      Path.join(this.rootPath, path.relPath)
-    );
-    switch (path.type) {
-      case "directory":
-        await FS.promises.mkdir(absPath, { recursive: true });
+    let absPath: string;
+    let currentRoot: string[] = this.rootPath.split(Path.sep);
+    while (true) {
+      // create directory if not hoisting or if current root is fs root
+      if (!path.hoist || currentRoot.length === 1) {
+        absPath = Path.normalize(Path.join(this.rootPath, path.relPath));
+        switch (path.type) {
+          case "directory":
+            await FS.promises.mkdir(absPath, { recursive: true });
+            break;
+          case "file":
+            await FS.promises.mkdir(Path.dirname(absPath), { recursive: true });
+            break;
+        }
         break;
-      case "file":
-        await FS.promises.mkdir(Path.dirname(absPath), { recursive: true });
-        break;
+      }
+
+      // check if node exists at current root of expected type
+      // yes, not doing Path.join(...currentRoot, path.relPath) is intentional
+      // Path.join leaves off the leading path separator on posix systems
+      absPath = Path.normalize(
+        Path.join(currentRoot.join(Path.sep), path.relPath)
+      );
+      switch (path.type) {
+        case "directory":
+          if (await doesDirExist(absPath)) {
+            return absPath;
+          }
+          break;
+        case "file":
+          if (await doesFileExist(absPath)) {
+            return absPath;
+          }
+          break;
+      }
+
+      currentRoot.pop(); // go up 1 directory
     }
     return absPath;
   }

@@ -4,32 +4,35 @@ import { asSubcommand, withUiContext } from "../ui";
 import { ProjectPaths } from "../paths";
 
 asSubcommand(async (project) => {
-  await withUiContext("Deleting build artifacts", async () => {
-    // resolve paths
-    const tsBuildInfoPath = Path.join(
-      await project.resolver.resolve(ProjectPaths.dirs.derivations),
-      "typescript",
-      "tsconfig.tsbuildinfo"
-    );
-    const sourcePath: string = await project.resolver.resolve(
-      ProjectPaths.dirs.build
-    );
+  for await (const subproject of project.walk()) {
+    const path: string = await subproject.resolver.resolve(ProjectPaths.root);
+    await withUiContext(`Deleting build artifacts for ${path}`, async () => {
+      // resolve paths
+      const tsBuildInfoPath = Path.join(
+        await subproject.resolver.resolve(ProjectPaths.dirs.derivations),
+        "typescript",
+        "tsconfig.tsbuildinfo"
+      );
+      const sourcePath: string = await subproject.resolver.resolve(
+        ProjectPaths.dirs.build
+      );
 
-    // clear fingerprint
-    project.internal.sourceFingerprint = undefined;
-    project.internal.sourceFingerprintSeed = undefined;
-    await project.internal.flush();
+      // clear fingerprint
+      subproject.internal.sourceFingerprint = undefined;
+      subproject.internal.sourceFingerprintSeed = undefined;
+      await subproject.internal.flush();
 
-    // delete build artifacts
-    try {
-      await FS.promises.rmdir(sourcePath, {
-        recursive: true,
-      });
-      await FS.promises.rm(tsBuildInfoPath);
-    } catch (err) {
-      if (err.code !== "ENOENT") {
-        throw err;
+      // delete build artifacts
+      try {
+        await FS.promises.rmdir(sourcePath, {
+          recursive: true,
+        });
+        await FS.promises.rm(tsBuildInfoPath);
+      } catch (err) {
+        if (err.code !== "ENOENT") {
+          throw err;
+        }
       }
-    }
-  });
+    });
+  }
 });

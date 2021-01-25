@@ -11,4 +11,8 @@ Commander.program
   .command("clean", "delete build artifacts")
   .command("credentials", "manage user credentials")
   .command("sync", "sync project configuration files")
-  .parse();
+  .parseAsync()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

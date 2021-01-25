@@ -8,11 +8,11 @@ import { Project } from "../project";
  * TypeScript compiler configuration. This is equivalent to what would be found
  * in tsconfig.json.
  */
-export async function makeCompilerConfig(resolver: PathResolver) {
+export async function makeCompilerConfig(project: Project): Promise<any> {
   return {
     compilerOptions: {
       allowJs: false,
-      baseUrl: await resolver.resolve(ProjectPaths.dirs.source),
+      baseUrl: await project.resolver.resolve(ProjectPaths.dirs.source),
       declaration: true,
       esModuleInterop: true,
       emitDecoratorMetadata: true,
@@ -24,21 +24,23 @@ export async function makeCompilerConfig(resolver: PathResolver) {
       noImplicitAny: true,
       noImplicitReturns: true,
       noImplicitThis: true,
-      outDir: await resolver.resolve(ProjectPaths.dirs.build),
+      outDir: await project.resolver.resolve(ProjectPaths.dirs.build),
       paths: {
         "@project/*": ["*"],
       },
       preserveConstEnums: true,
-      rootDir: await resolver.resolve(ProjectPaths.dirs.source),
+      rootDir: await project.resolver.resolve(ProjectPaths.dirs.source),
       sourceMap: true,
       strictBindCallApply: true,
       strictFunctionTypes: true,
       strictNullChecks: true,
       stripInternal: true,
       target: "ES2020",
-      tsBuildInfoFile: await resolver.resolve(ProjectPaths.files.buildInfo),
+      tsBuildInfoFile: await project.resolver.resolve(
+        ProjectPaths.files.buildInfo
+      ),
     },
-    include: [await resolver.resolve(ProjectPaths.dirs.source)],
+    include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
     exclude: ["node_modules", "**/__tests__/*"],
   };
 }
@@ -61,9 +63,8 @@ export class Compiler {
    */
   public async prepare(): Promise<CompilationUnit> {
     // parse config
-    const config = await makeCompilerConfig(this.project.resolver);
     const commandLine = TypeScript.parseJsonConfigFileContent(
-      config,
+      await makeCompilerConfig(this.project),
       TypeScript.sys,
       await this.project.resolver.resolve(ProjectPaths.root)
     );

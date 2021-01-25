@@ -20,7 +20,7 @@ export class Detective {
   public async assertNoCircularDependencies(): Promise<void> {
     const entrypointPath: string = await this.project.getSourceEntrypoint();
     const madgeObj = await madge(entrypointPath, {
-      tsConfig: makeCompilerConfig(this.project.resolver),
+      tsConfig: await makeCompilerConfig(this.project),
       fileExtensions: ["ts", "tsx"],
     });
     const circles: string[][] = madgeObj.circular();

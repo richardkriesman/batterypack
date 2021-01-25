@@ -18,7 +18,7 @@ export interface Config {
   /**
    * ignore rules
    */
-  gitignore: string[];
+  gitignore?: string[];
 
   /**
    * Name of the project.
@@ -40,11 +40,10 @@ export interface Config {
   };
 
   /**
-   * .yarnrc.yml configuration
+   * A list of relative paths to directories containing subprojects. Each
+   * subproject root must have a rocket.yml file.
    */
-  yarn: {
-    linker: "pnp" | "node-modules";
-  };
+  subprojects?: string[];
 }
 
 /**
@@ -63,12 +62,7 @@ export class ConfigFile extends YamlStore<Config> {
     );
     let config: Config | undefined = await super.readData<Config>(configPath);
     if (config === undefined) {
-      config = {
-        gitignore: [],
-        yarn: {
-          linker: "pnp",
-        },
-      };
+      config = {};
     }
     return super.bindDynamicAccessors<ConfigFile, Config>(
       new ConfigFile(config, configPath)

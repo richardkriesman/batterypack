@@ -44,6 +44,23 @@ export class Project {
   }
 
   /**
+   * Walks through the project tree, recursively yielding this project and
+   * any subprojects.
+   */
+  public async *walk(): AsyncGenerator<Project> {
+    yield this;
+    const childPaths: string[] = this.config.subprojects ?? [];
+    for (const relPath of childPaths) {
+      const absPath: string = await this.resolver.resolve({
+        type: "directory",
+        relPath: relPath,
+      });
+      // noinspection BadExpressionStatementJS - yes it is, WebStorm
+      yield* (await Project.open(absPath)).walk();
+    }
+  }
+
+  /**
    * Gets the currently configured source code entrypoint.
    */
   public async getBuildEntrypoint(): Promise<string> {
