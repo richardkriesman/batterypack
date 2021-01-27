@@ -2,6 +2,8 @@ import * as Commander from "commander";
 import Ora from "ora";
 import Listr from "listr";
 import Table from "cli-table";
+import * as WorkerThreads from "worker_threads";
+
 import { Project } from "./project";
 import { BatterypackError } from "./error";
 
@@ -12,11 +14,133 @@ export interface UiTask<C> {
   formatError?: (err: Error) => string | void;
 }
 
+interface Message {
+  name: string;
+  data: any;
+}
+
+export class Dispatcher {
+  public send(name: string, data: any): void {
+    WorkerThreads.parentPort?.postMessage({
+      name,
+      data,
+    } as Message);
+  }
+}
+
+export class Observer {
+  private observers: Map<string, Array<(data: any) => void>>;
+
+  public constructor(worker: WorkerThreads.Worker) {
+    this.observers = new Map();
+    worker.on("message", this.onMessage.bind(this));
+  }
+
+  public on(name: string, fn: (data: any) => void): void {
+    let observers: Array<(data: any) => void> | undefined = this.observers.get(
+      name
+    );
+    if (observers === undefined) {
+      observers = [];
+      this.observers.set(name, observers);
+    }
+    observers.push(fn);
+  }
+
+  private onMessage(message: Message): void {
+    const observers:
+      | Array<(data: any) => void>
+      | undefined = this.observers.get(message.name);
+    if (observers === undefined) {
+      return;
+    }
+    for (const fn of observers) {
+      fn(message.data);
+    }
+  }
+}
+
+export interface SubcommandContext {
+  project: Project;
+  opts: Commander.OptionValues;
+}
+
+export interface SubcommandOptions<C extends object> {
+  filename: string;
+  configure?: (command: Commander.Command) => void;
+  ctx: C;
+  tasks: readonly UiTask<SubcommandContext & C>[];
+}
+
+export function asSubcommandAsync<C extends object = {}>(
+  options: SubcommandOptions<C>
+): void {
+  if (WorkerThreads.isMainThread) {
+    // foreground
+    options.configure?.(Commander.program); // configure arg validation
+
+    // build subcommand
+    Commander.program
+      .option(
+        "--project <project>",
+        "path to the project's root directory",
+        process.cwd()
+      )
+      .action(() => {
+        // main thread
+        const worker = new WorkerThreads.Worker(options.filename, {
+          workerData: Commander.program.opts(),
+        });
+
+        // resolve a task promise when a task completes
+        const observer = new Observer(worker);
+        let resolver: () => void;
+        observer.on("step", () => {
+          resolver();
+        });
+
+        // TODO: Build Listr instance from task list - set resolver to each resolve() function
+
+        return new Promise((resolve2, reject2) => {
+          worker.on("error", (err) => {
+            reject2(err);
+          });
+          worker.on("exit", (exitCode) => {
+            if (exitCode === 0) {
+              resolve2();
+            }
+          });
+        });
+      })
+      .parseAsync()
+      .catch((err) => {
+        if (err instanceof RocketError && err.showMinimal) {
+          console.error(`\n${err.message}`); // only show message, not stack trace
+        } else {
+          console.error(err);
+        }
+        process.exit(1);
+      });
+  } else {
+    // background worker thread
+    const opts: Commander.OptionValues = WorkerThreads.workerData;
+    Project.open(opts.project)
+      .then((project) => {
+        // TODO: Run task fn() recursively
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+}
+
 /**
  * Configures and runs this process as a batterypack subcommand.
  *
  * @param run The subcommand function.
  * @param configure A function which configures the {@link Commander.Command}.
+ *
+ * @deprecated
  */
 export function asSubcommand(
   run: (project: Project, opts: Commander.OptionValues) => Promise<void>,
@@ -139,6 +263,8 @@ export async function withUiContext<T>(
  *
  * This function resolves when all tasks resolve, and rejects if any single
  * task rejects.
+ *
+ * @deprecated
  */
 export async function withUiTaskList<C>(
   ctx: C,

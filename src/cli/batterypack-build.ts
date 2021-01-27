@@ -1,57 +1,65 @@
 import "source-map-support/register";
 import Chalk from "chalk";
 import { CompilationUnit, Compiler, CompilerErrorSet } from "../tool/compiler";
-import { asSubcommand, UiTask, withUiTaskList } from "../ui";
+import { asSubcommandAsync, UiTask, withUiTaskList } from "../ui";
 import { CircularDependencyError, Detective } from "../tool/detective";
 import { Formatter } from "../tool/formatter";
 import { Project } from "../project";
 import { ProjectPaths } from "../paths";
-import { doesFileExist } from "../helpers";
+import { doesFileExist } from "../io";
 
 interface BuildContext {
   compilationUnit?: CompilationUnit;
 }
 
-asSubcommand(async (project) => {
-  /*
-    Build an array of subprojects by walking down the subproject tree.
-    The array is then reversed, allowing dependent subprojects to be built
-    first.
-   */
-  let subprojects: Project[] = [];
-  for await (const subproject of project.walk()) {
-    subprojects.push(subproject);
-  }
-  subprojects.reverse();
-
-  // build tasks for each subproject
-  const tasks: UiTask<BuildContext>[] = [];
-  for (const subproject of subprojects) {
-    tasks.push({
-      description: await subproject.resolver.resolve(ProjectPaths.root),
-      shouldSkip: async () => {
-        // skip if the source entrypoint doesn't exist
-        if (!(await doesFileExist(await subproject.getSourceEntrypoint()))) {
-          return "Project has no source code";
-        }
-
-        // skip if the fingerprint of the source directory matches
-        if (
-          subproject.internal.sourceFingerprint ===
-          (await subproject.getSourceFingerprint())
-        ) {
-          return "Project is already built";
-        }
-
-        // don't skip, project needs to be built
-        return false;
-      },
-      fn: async () => makeProjectBuildTasks(subproject),
+asSubcommandAsync({
+  filename: __filename,
+  foreground: (observer) => {
+    observer.on("test", (data) => {
+      console.log("お早う御座います！", data);
     });
-  }
+  },
+  background: async (project, opts, dispatcher) => {
+    /*
+      Build an array of subprojects by walking down the subproject tree.
+      The array is then reversed, allowing dependent subprojects to be built
+      first.
+    */
+    let subprojects: Project[] = [];
+    for await (const subproject of project.walk()) {
+      subprojects.push(subproject);
+    }
+    subprojects.reverse();
 
-  // run the task list
-  await withUiTaskList({}, tasks);
+    // build tasks for each subproject
+    const tasks: UiTask<BuildContext>[] = [];
+    for (const subproject of subprojects) {
+      tasks.push({
+        description: await subproject.resolver.resolve(ProjectPaths.root),
+        shouldSkip: async () => {
+          // skip if the source entrypoint doesn't exist
+          if (!(await doesFileExist(await subproject.getSourceEntrypoint()))) {
+            return "Project has no source code";
+          }
+
+          // skip if the fingerprint of the source directory matches
+          if (
+            subproject.internal.sourceFingerprint ===
+            (await subproject.getSourceFingerprint())
+          ) {
+            return "Project is already built";
+          }
+
+          // don't skip, project needs to be built
+          return false;
+        },
+        fn: async () => makeProjectBuildTasks(subproject),
+      });
+    }
+
+    // run the task list
+    await withUiTaskList({}, tasks);
+  },
 });
 
 /**

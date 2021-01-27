@@ -2,7 +2,7 @@ import { Buffer } from "buffer";
 import * as YAML from "js-yaml";
 
 import { Derivation } from "./abstract";
-import { whenAsync } from "../../helpers";
+import { whenAsync } from "../../when";
 import { Project } from "../../project";
 
 /**

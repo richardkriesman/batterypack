@@ -1,7 +1,7 @@
 import * as FS from "fs";
 import * as Path from "path";
 import { ProjectPath } from "./path";
-import { doesDirExist, doesFileExist } from "../helpers";
+import { doesDirExist, doesFileExist } from "../io";
 
 /**
  * Resolves paths for a batterypack project.

@@ -1,8 +1,8 @@
 import * as FS from "fs";
 import * as Path from "path";
 import { Derivation } from "./abstract";
-import { doesFileExist } from "../../helpers";
 import { Project } from "../../project";
+import { doesFileExist } from "../../io";
 
 /**
  * Builds derivation files.

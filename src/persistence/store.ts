@@ -1,7 +1,7 @@
 import * as FS from "fs";
 import * as YAML from "js-yaml";
 
-import { doesFileExist } from "../helpers";
+import { doesFileExist } from "../io";
 
 /**
  * A persistent object storage interface which proxies property accesses to a
