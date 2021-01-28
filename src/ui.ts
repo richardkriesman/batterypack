@@ -114,7 +114,7 @@ export function asSubcommandAsync<C extends object = {}>(
       })
       .parseAsync()
       .catch((err) => {
-        if (err instanceof RocketError && err.showMinimal) {
+        if (err instanceof BatterypackError && err.showMinimal) {
           console.error(`\n${err.message}`); // only show message, not stack trace
         } else {
           console.error(err);
