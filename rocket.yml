@@ -1,7 +1,0 @@
-name: rocket
-entrypoint:
-  build: build/cli/rocket.js
-  source: src/cli/rocket.ts
-gitignore: []
-yarn:
-  linker: node-modules

@@ -1,5 +1,5 @@
 {
-  "$id": "https://richardkriesman.com/schemas/rocket-config.json",
+  "$id": "https://batterypack.richardkriesman.com/schemas/config.json",
   "$schema": "http://json-schema.org/draft-07/schema",
   "title": "Rocket configuration",
   "type": "object",
@@ -9,18 +9,14 @@
         "build": "build/index.js",
         "source": "src/index.tsx"
       },
-      "gitignore": [
-        "/build"
-      ],
+      "gitignore": ["/build"],
       "scopes": {
         "scope": {
           "origin": "https://registry.example.com",
           "credential": "my-credential"
         }
       },
-      "subprojects": [
-        "subproject-a"
-      ]
+      "subprojects": ["subproject-a"]
     }
   ],
   "properties": {
@@ -35,26 +31,19 @@
           "source": "src/index.tsx"
         }
       ],
-      "required": [
-        "build",
-        "source"
-      ],
+      "required": ["build", "source"],
       "properties": {
         "build": {
           "$id": "#/properties/entrypoint/properties/build",
           "title": "Build entrypoint",
           "type": "string",
-          "examples": [
-            "build/index.js"
-          ]
+          "examples": ["build/index.js"]
         },
         "source": {
           "$id": "#/properties/entrypoint/properties/source",
           "title": "Source entrypoint",
           "type": "string",
-          "examples": [
-            "src/index.tsx"
-          ]
+          "examples": ["src/index.tsx"]
         }
       }
     },
@@ -62,17 +51,11 @@
       "$id": "#/properties/gitignore",
       "title": "Additional gitignore rules",
       "type": "array",
-      "examples": [
-        [
-          "/build"
-        ]
-      ],
+      "examples": [["/build"]],
       "items": {
         "$id": "#/properties/gitignore/items",
         "type": "string",
-        "examples": [
-          "/build"
-        ]
+        "examples": ["/build"]
       },
       "uniqueItems": true,
       "additionalItems": true
@@ -81,9 +64,7 @@
       "$id": "#/properties/name",
       "title": "Project name",
       "type": "string",
-      "examples": [
-        "my-program"
-      ]
+      "examples": ["my-program"]
     },
     "scopes": {
       "$id": "#/properties/scopes",
@@ -107,26 +88,20 @@
             "credential": "my-credential"
           }
         ],
-        "required": [
-          "origin"
-        ],
+        "required": ["origin"],
         "properties": {
           "origin": {
             "$id": "#/properties/scopes/additionalProperties/properties/origin",
             "type": "string",
             "title": "Registry server origin",
-            "examples": [
-              "https://registry.example.com"
-            ]
+            "examples": ["https://registry.example.com"]
           },
           "credential": {
             "$id": "#/properties/scopes/additionalProperties/properties/credential",
             "type": "string",
             "title": "Credential name",
             "description": "The name of the credential stored in .rocket/credentials.yml",
-            "examples": [
-              "my-credential"
-            ]
+            "examples": ["my-credential"]
           }
         },
         "additionalProperties": true
@@ -136,18 +111,11 @@
       "$id": "#/properties/subprojects",
       "title": "Subprojects",
       "type": "array",
-      "examples": [
-        [
-          "subproject-a",
-          "subproject-b"
-        ]
-      ],
+      "examples": [["subproject-a", "subproject-b"]],
       "items": {
         "$id": "#/properties/subprojects/items",
         "type": "string",
-        "examples": [
-          "subproject-a"
-        ]
+        "examples": ["subproject-a"]
       }
     }
   },
