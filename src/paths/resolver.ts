@@ -4,7 +4,7 @@ import { ProjectPath } from "./path";
 import { doesDirExist, doesFileExist } from "../helpers";
 
 /**
- * Resolves paths for a Rocket project.
+ * Resolves paths for a batterypack project.
  */
 export class PathResolver {
   private readonly rootPath: string;

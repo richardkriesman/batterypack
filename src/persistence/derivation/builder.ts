@@ -22,7 +22,11 @@ export class DerivationBuilder {
       // resolve file paths for the original file in the store and the symlink
       const storePath: string = await this.project.resolver.resolve({
         type: "file",
-        relPath: Path.join(".rocket", derivation.toolId, derivation.filePath),
+        relPath: Path.join(
+          ".batterypack",
+          derivation.toolId,
+          derivation.filePath
+        ),
       });
       const linkPath: string = await this.project.resolver.resolve({
         type: "file",

@@ -1,7 +1,7 @@
 {
-  "$id": "https://batterypack.richardkriesman.com/schemas/config.json",
+  "$id": "https://batterypack.richardkriesman.com/schemas/batterypack.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "Rocket configuration",
+  "title": "batterypack configuration",
   "type": "object",
   "examples": [
     {
@@ -100,7 +100,7 @@
             "$id": "#/properties/scopes/additionalProperties/properties/credential",
             "type": "string",
             "title": "Credential name",
-            "description": "The name of the credential stored in .rocket/credentials.yml",
+            "description": "The name of the credential stored in .batterypack/credentials.yml",
             "examples": ["my-credential"]
           }
         },

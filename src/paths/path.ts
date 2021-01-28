@@ -57,7 +57,7 @@ export const ProjectPaths: {
     },
     derivations: {
       type: "directory",
-      relPath: ".rocket",
+      relPath: ".batterypack",
     },
     source: {
       type: "directory",
@@ -75,20 +75,20 @@ export const ProjectPaths: {
     },
     buildInfo: {
       type: "file",
-      relPath: ".rocket/typescript/tsconfig.tsbuildinfo",
+      relPath: ".batterypack/typescript/tsconfig.tsbuildinfo",
     },
     config: {
       type: "file",
-      relPath: "rocket.yml",
+      relPath: "batterypack.yml",
     },
     credentials: {
       type: "file",
-      relPath: ".rocket/credentials.yml",
+      relPath: ".batterypack/credentials.yml",
       hoist: true,
     },
     internalState: {
       type: "file",
-      relPath: ".rocket/internal.yml",
+      relPath: ".batterypack/internal.yml",
     },
   },
 };

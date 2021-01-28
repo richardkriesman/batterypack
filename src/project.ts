@@ -13,7 +13,7 @@ import {
 import { Internal, InternalFile } from "./persistence/internal";
 
 /**
- * Manage a Rocket project.
+ * Manage a batterypack project.
  */
 export class Project {
   public static async open(path: string): Promise<Project> {

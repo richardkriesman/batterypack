@@ -3,7 +3,7 @@ import Ora from "ora";
 import Listr from "listr";
 import Table from "cli-table";
 import { Project } from "./project";
-import { RocketError } from "./error";
+import { BatterypackError } from "./error";
 
 export interface UiTask<C> {
   description: string;
@@ -13,7 +13,7 @@ export interface UiTask<C> {
 }
 
 /**
- * Configures and runs this process as a Rocket subcommand.
+ * Configures and runs this process as a batterypack subcommand.
  *
  * @param run The subcommand function.
  * @param configure A function which configures the {@link Commander.Command}.
@@ -39,7 +39,7 @@ export function asSubcommand(
     })
     .parseAsync()
     .catch((err) => {
-      if (err instanceof RocketError && err.showMinimal) {
+      if (err instanceof BatterypackError && err.showMinimal) {
         console.error(`\n${err.message}`); // only show message, not stack trace
       } else {
         console.error(err);
@@ -171,7 +171,7 @@ function taskListToListr<C>(ctx: C, tasks: readonly UiTask<C>[]): Listr {
             const message: string | void = task.formatError(error);
             if (message !== undefined) {
               // error is expected, so don't show the stack trace
-              error = new RocketError(message, true);
+              error = new BatterypackError(message, true);
             }
           }
           throw error;

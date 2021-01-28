@@ -2,8 +2,8 @@ import { PathResolver, ProjectPaths } from "../paths";
 import { LoadedStore, YamlStore } from "./store";
 
 /**
- * Project persistence representation. Rocket uses this persistence to build derivations
- * for tool-specific configuration files.
+ * Project persistence representation. batterypack uses this persistence to
+ * build derivations for tool-specific configuration files.
  */
 export interface Config {
   /**
@@ -30,7 +30,7 @@ export interface Config {
    * Scope names should be added without the @ prefix.
    *
    * If authentication is needed, specify a credential name and the credentials
-   * will be read from Rocket's credentials file.
+   * will be read from batterypack's credentials file.
    */
   scopes?: {
     [scope: string]: {
@@ -41,7 +41,7 @@ export interface Config {
 
   /**
    * A list of relative paths to directories containing subprojects. Each
-   * subproject root must have a rocket.yml file.
+   * subproject root must have a batterypack.yml file.
    */
   subprojects?: string[];
 }

@@ -1,8 +1,8 @@
-export class RocketError extends Error {
+export class BatterypackError extends Error {
   public readonly showMinimal: boolean;
 
   /**
-   * Creates a new {@link RocketError}.
+   * Creates a new {@link BatterypackError}.
    *
    * @param message Message to display
    * @param showMinimal Whether to only show the message when printing the
@@ -10,8 +10,8 @@ export class RocketError extends Error {
    */
   public constructor(message?: string, showMinimal: boolean = false) {
     super(message);
-    Object.setPrototypeOf(this, RocketError.prototype);
-    this.name = "RocketError";
+    Object.setPrototypeOf(this, BatterypackError.prototype);
+    this.name = "BatterypackError";
     this.showMinimal = showMinimal;
   }
 }
