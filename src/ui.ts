@@ -1,29 +1,33 @@
 import * as Commander from "commander";
-import Ora from "ora";
 import Listr from "listr";
 import Table from "cli-table";
 import * as WorkerThreads from "worker_threads";
 
 import { Project } from "./project";
 import { BatterypackError } from "./error";
+import { DeepReadonly } from "./immutable";
 
-export interface UiTask<C> {
+export interface Task<C = {}> {
   description: string;
-  fn: (ctx: C) => Promise<readonly UiTask<C>[] | void>;
-  shouldSkip?: () => Promise<string | boolean>;
+  fn?: (ctx: C, opts: Commander.OptionValues) => Promise<void>;
   formatError?: (err: Error) => string | void;
+  shouldSkip?: () => Promise<string | boolean>;
+  tasks?: readonly Task<C>[];
 }
 
-interface Message {
-  name: string;
-  data: any;
-}
+class Message {
+  public readonly name: string;
+  public readonly data: DeepReadonly<any> | undefined;
 
-export class Dispatcher {
-  public send(name: string, data: any): void {
-    WorkerThreads.parentPort?.postMessage({
-      name,
-      data,
+  public constructor(name: string, data?: DeepReadonly<any>) {
+    this.name = name;
+    this.data = data;
+  }
+
+  public send(): void {
+    WorkerThreads.parentPort!.postMessage({
+      name: this.name,
+      data: this.data,
     } as Message);
   }
 }
@@ -60,19 +64,14 @@ export class Observer {
   }
 }
 
-export interface SubcommandContext {
-  project: Project;
-  opts: Commander.OptionValues;
-}
-
 export interface SubcommandOptions<C extends object> {
   filename: string;
   configure?: (command: Commander.Command) => void;
   ctx: C;
-  tasks: readonly UiTask<SubcommandContext & C>[];
+  tasks: (project: Project) => Promise<readonly Task<C>[]>;
 }
 
-export function asSubcommandAsync<C extends object = {}>(
+export function asSubcommandTaskTree<C extends object = {}>(
   options: SubcommandOptions<C>
 ): void {
   if (WorkerThreads.isMainThread) {
@@ -86,51 +85,208 @@ export function asSubcommandAsync<C extends object = {}>(
         "path to the project's root directory",
         process.cwd()
       )
-      .action(() => {
-        // main thread
+      .action(async () => {
+        // build tasks
+        const project: Project = await Project.open(
+          Commander.program.opts().project
+        );
+        const tasks = await options.tasks(project);
+
+        // start worker thread to run tasks
         const worker = new WorkerThreads.Worker(options.filename, {
           workerData: Commander.program.opts(),
         });
 
-        // resolve a task promise when a task completes
+        // listen for progress messages from the worker
         const observer = new Observer(worker);
-        let resolver: () => void;
-        observer.on("step", () => {
-          resolver();
+        const hooks: ObserverHooks = {};
+        observer.on("shouldSkip", (result: string | boolean) => {
+          // shouldSkip fires for every task
+          hooks.onSkipResult!(result);
+        });
+        observer.on("fn", () => {
+          // fn fires if the task has a function that completed
+          hooks.onFnResolve!();
+        });
+        observer.on("error", (err: Error) => {
+          // error fires if the task's function throws
+          hooks.onFnError!(err);
         });
 
-        // TODO: Build Listr instance from task list - set resolver to each resolve() function
-
-        return new Promise((resolve2, reject2) => {
-          worker.on("error", (err) => {
-            reject2(err);
-          });
-          worker.on("exit", (exitCode) => {
-            if (exitCode === 0) {
-              resolve2();
-            }
-          });
-        });
+        // run tasks, waiting for them to complete and worker to exit
+        await Promise.all([
+          new Promise((resolve2, reject2) => {
+            worker.on("error", (err) => {
+              reject2(err);
+            });
+            worker.on("exit", (exitCode) => {
+              if (exitCode === 0) {
+                resolve2(undefined);
+              }
+            });
+          }),
+          makeUiListr<C>(hooks, tasks).run(),
+        ]);
       })
       .parseAsync()
       .catch((err) => {
-        if (err instanceof BatterypackError && err.showMinimal) {
-          console.error(`\n${err.message}`); // only show message, not stack trace
-        } else {
-          console.error(err);
-        }
+        console.error(`\n${err.stack}`);
         process.exit(1);
       });
   } else {
     // background worker thread
     const opts: Commander.OptionValues = WorkerThreads.workerData;
     Project.open(opts.project)
-      .then((project) => {
-        // TODO: Run task fn() recursively
+      .then(async (project) => {
+        // build tasks
+        const tasks = await options.tasks(project);
+
+        // walk through tasks, executing each one
+        await walkTaskTree<C>(tasks, async (task: Task<C>) => {
+          // check if task should be skipped
+          let skipResult: string | boolean;
+          if (task.shouldSkip !== undefined) {
+            skipResult = await task.shouldSkip();
+          } else {
+            // no shouldSkip function, assume the task should proceed
+            skipResult = false;
+          }
+          new Message("shouldSkip", skipResult).send(); // notify ui
+          if (skipResult !== false) {
+            // don't continue walking down this branch
+            return NextAction.NEXT_SIBLING;
+          }
+
+          // execute task
+          if (task.fn !== undefined) {
+            try {
+              await task.fn(options.ctx, opts);
+              new Message("fn").send();
+            } catch (err) {
+              /*
+                Optionally, format the error before sending it to the UI thread.
+                It is important to ensure this is done on the worker thread
+                because the structured clone algorithm doesn't preserve the
+                prototype chain. Therefore, instanceof checks for Error, but not
+                for Error subtypes.
+               */
+              let error: Error = err;
+              if (task.formatError !== undefined) {
+                const message: string | void = task.formatError(error);
+                if (message !== undefined) {
+                  // error is expected, so don't show the stack trace
+                  error = new BatterypackError(message, true);
+                }
+              }
+
+              // send error to ui thread
+              new Message("error", error).send();
+              return NextAction.ABORT;
+            }
+          }
+
+          // continue walking down this branch if there's anything left
+          return NextAction.NORMAL;
+        });
       })
       .catch((err) => {
         throw err;
       });
+  }
+}
+
+interface ObserverHooks {
+  onSkipResult?(result: string | boolean): void;
+  onFnResolve?(): void;
+  onFnError?(err: Error): void;
+}
+
+function makeUiListr<C>(
+  hooks: ObserverHooks,
+  tasks: readonly Task<C>[]
+): Listr {
+  return new Listr(
+    tasks.map((task) => ({
+      title: task.description,
+      task: async (_, listrTask) => {
+        const startTimeMs: number = Date.now();
+
+        // task contains subtasks, start on those immediately
+        if (task.tasks !== undefined) {
+          return makeUiListr<C>(hooks, task.tasks);
+        }
+
+        // wait for a signal from the observer that the worker
+        // has completed the task (that is, it ran Task.fn())
+        // before proceeding
+        if (task.fn !== undefined) {
+          await new Promise<void>((resolve, reject) => {
+            hooks.onFnResolve = resolve;
+            hooks.onFnError = reject;
+          });
+        }
+
+        // update description with total time
+        const durationSec: number = (Date.now() - startTimeMs) / 1000;
+        listrTask.title = `${listrTask.title} (${durationSec}s)`;
+        return;
+      },
+      /*
+        task.shouldSkip is cast to any because the type definition is wrong:
+        the skip function can return a Promise which resolves with a string
+        indicating the reason the task was skipped. This is not reflected in
+        the type definition, however.
+     */
+      skip: () => {
+        return new Promise<string | boolean>((resolve) => {
+          hooks.onSkipResult = resolve;
+        }) as any;
+      },
+    }))
+  );
+}
+
+/**
+ * Next action to take when traversing a task tree.
+ */
+enum NextAction {
+  /**
+   * Continue traversing the tree normally. If child nodes exist, traverse down
+   * them. Then, traverse down siblings, if any exist.
+   */
+  NORMAL,
+  /**
+   * Do not traverse down child nodes for this branch. Instead, traverse down
+   * siblings, if any exist.
+   */
+  NEXT_SIBLING,
+  /**
+   * Stop traversing and return.
+   */
+  ABORT,
+}
+
+/**
+ * Recursively traverses a task tree, awaiting a function for each task.
+ * The function is expected to resolve a value indicating the next action.
+ */
+async function walkTaskTree<C>(
+  tasks: readonly Task<C>[],
+  fn: (task: Task<C>) => Promise<NextAction>
+): Promise<void> {
+  for (const task of tasks) {
+    const nextAction: NextAction = await fn(task);
+    switch (nextAction) {
+      case NextAction.NORMAL:
+        if (task.tasks) {
+          await walkTaskTree(task.tasks, fn);
+        }
+        break;
+      case NextAction.NEXT_SIBLING:
+        break;
+      case NextAction.ABORT:
+        return;
+    }
   }
 }
 
@@ -139,8 +295,6 @@ export function asSubcommandAsync<C extends object = {}>(
  *
  * @param run The subcommand function.
  * @param configure A function which configures the {@link Commander.Command}.
- *
- * @deprecated
  */
 export function asSubcommand(
   run: (project: Project, opts: Commander.OptionValues) => Promise<void>,
@@ -163,11 +317,7 @@ export function asSubcommand(
     })
     .parseAsync()
     .catch((err) => {
-      if (err instanceof BatterypackError && err.showMinimal) {
-        console.error(`\n${err.message}`); // only show message, not stack trace
-      } else {
-        console.error(err);
-      }
+      console.error(err);
       process.exit(1);
     });
 }
@@ -201,116 +351,4 @@ export function printTable(options: {
 
   // print table
   console.log(table.toString());
-}
-
-/**
- * Displays a spinner which runs in the background and then awaits an operation.
- * If the operation resolves, the spinner will change to a green checkmark and
- * control is returned to the caller. Any value returned by the operation will
- * be returned to the caller. If the operation rejects, the spinner
- * will change to a red X, printing the error and terminating the process
- * with an exit code of 1.
- *
- * @param description User-friendly description of the action to display
- *                    alongside the spinner.
- * @param fn Async function which will be awaited within the context.
- * @param errFn Optionally, a function which handles a thrown error, returning
- *              a string to display to the user or `undefined`, in which case
- *              the error will be printed.
- *
- * @deprecated
- */
-export async function withUiContext<T>(
-  description: string,
-  fn: () => Promise<T>,
-  errFn: (err: Error) => string | undefined = () => undefined
-): Promise<T> {
-  const startTimeMs: number = Date.now();
-  const spinner: Ora.Ora = Ora({
-    // オラオラオラ！
-    color: "yellow",
-    text: description,
-  }).start();
-  try {
-    const result: any = await fn();
-    const durationSec: number = (Date.now() - startTimeMs) / 1000;
-    spinner.succeed(`${spinner.text} (${durationSec}s)`);
-    return result;
-  } catch (err) {
-    // ゴゴゴゴ
-    let output: string | undefined = errFn(err);
-    if (!output) {
-      output = `${err.name}: ${err.message}\n${err.stack}`;
-    }
-    spinner.fail(output);
-    process.exit(1);
-  }
-}
-
-/**
- * Awaits a list of {@link UiTask} instances in the order they are specified.
- * Each task is displayed with a spinner, along with a description of the
- * operation.
- *
- * If a task has a {@link UiTask#shouldSkip} function defined,
- * the task will be skipped if {@link UiTask#shouldSkip} resolves with a value
- * of `true`.
- *
- * If a task resolves, the spinner will change to a green checkmark and display
- * the total amount of time the operation took to complete. If the task rejects,
- * the spinner will change to a red X, printing the error and terminating the
- * task list.
- *
- * This function resolves when all tasks resolve, and rejects if any single
- * task rejects.
- *
- * @deprecated
- */
-export async function withUiTaskList<C>(
-  ctx: C,
-  tasks: readonly UiTask<C>[]
-): Promise<void> {
-  await taskListToListr<C>(ctx, tasks).run();
-}
-
-/**
- * Converts a list of {@link UiTask} into a {@link Listr} which can be
- * executed.
- */
-function taskListToListr<C>(ctx: C, tasks: readonly UiTask<C>[]): Listr {
-  return new Listr(
-    tasks.map((task) => ({
-      title: task.description,
-      task: async (ctx, listrTask) => {
-        const startTimeMs: number = Date.now();
-        try {
-          const result: readonly UiTask<C>[] | void = await task.fn(ctx);
-          if (result === undefined) {
-            const durationSec: number = (Date.now() - startTimeMs) / 1000;
-            listrTask.title = `${listrTask.title} (${durationSec}s)`;
-            return;
-          }
-          return taskListToListr<C>(ctx, result);
-        } catch (err) {
-          let error: Error = err;
-          if (task.formatError !== undefined) {
-            const message: string | void = task.formatError(error);
-            if (message !== undefined) {
-              // error is expected, so don't show the stack trace
-              error = new BatterypackError(message, true);
-            }
-          }
-          throw error;
-        }
-      },
-      skip:
-        /*
-          task.shouldSkip is cast to any because the type definition is wrong:
-          the skip function can return a Promise which resolves with a string
-          indicating the reason the task was skipped. This is not reflected in
-          the type definition, however.
-         */
-        task.shouldSkip !== undefined ? (task.shouldSkip as any) : () => false,
-    }))
-  );
 }

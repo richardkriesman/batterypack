@@ -13,5 +13,9 @@ export class BatterypackError extends Error {
     Object.setPrototypeOf(this, BatterypackError.prototype);
     this.name = "BatterypackError";
     this.showMinimal = showMinimal;
+    if (this.showMinimal) {
+      // remove the actual stack trace, leaving just the message
+      this.stack = message;
+    }
   }
 }

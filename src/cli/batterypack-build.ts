@@ -1,7 +1,7 @@
 import "source-map-support/register";
 import Chalk from "chalk";
 import { CompilationUnit, Compiler, CompilerErrorSet } from "../tool/compiler";
-import { asSubcommandAsync, UiTask, withUiTaskList } from "../ui";
+import { asSubcommandTaskTree, Task } from "../ui";
 import { CircularDependencyError, Detective } from "../tool/detective";
 import { Formatter } from "../tool/formatter";
 import { Project } from "../project";
@@ -12,14 +12,10 @@ interface BuildContext {
   compilationUnit?: CompilationUnit;
 }
 
-asSubcommandAsync({
+asSubcommandTaskTree({
   filename: __filename,
-  foreground: (observer) => {
-    observer.on("test", (data) => {
-      console.log("お早う御座います！", data);
-    });
-  },
-  background: async (project, opts, dispatcher) => {
+  ctx: {},
+  tasks: async (project: Project) => {
     /*
       Build an array of subprojects by walking down the subproject tree.
       The array is then reversed, allowing dependent subprojects to be built
@@ -32,7 +28,7 @@ asSubcommandAsync({
     subprojects.reverse();
 
     // build tasks for each subproject
-    const tasks: UiTask<BuildContext>[] = [];
+    const tasks: Task<BuildContext>[] = [];
     for (const subproject of subprojects) {
       tasks.push({
         description: await subproject.resolver.resolve(ProjectPaths.root),
@@ -53,12 +49,10 @@ asSubcommandAsync({
           // don't skip, project needs to be built
           return false;
         },
-        fn: async () => makeProjectBuildTasks(subproject),
+        tasks: makeProjectBuildTasks(subproject),
       });
     }
-
-    // run the task list
-    await withUiTaskList({}, tasks);
+    return tasks;
   },
 });
 
@@ -68,7 +62,7 @@ asSubcommandAsync({
  */
 function makeProjectBuildTasks(
   project: Project
-): readonly UiTask<BuildContext>[] {
+): readonly Task<BuildContext>[] {
   return [
     {
       description: "Formatting project",

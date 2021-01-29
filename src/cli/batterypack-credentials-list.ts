@@ -1,7 +1,8 @@
 import "source-map-support/register";
-import { asSubcommand, printTable } from "../src/ui";
+import { asSubcommand, printTable } from "../ui";
+import { Project } from "../project";
 
-asSubcommand(async (project) => {
+asSubcommand(async (project: Project) => {
   printTable({
     headers: ["Name", "Type"],
     data: Object.keys(project.credentials.credentials).map((key) => {
