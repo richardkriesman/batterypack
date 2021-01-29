@@ -1,5 +1,5 @@
 import "source-map-support/register";
-import { asSubcommand } from "../ui";
+import { asSubcommand } from "../src/ui";
 
 asSubcommand(
   async (project, opts) => {

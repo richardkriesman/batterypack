@@ -1,13 +1,13 @@
 import "source-map-support/register";
-import { asSubcommand, withUiContext } from "../ui";
+import { asSubcommand, withUiContext } from "../src/ui";
 import {
   Derivation,
   DerivationBuilder,
   GitIgnoreDerivation,
   TypeScriptDerivation,
   YarnDerivation,
-} from "../persistence";
-import { ProjectPaths } from "../paths";
+} from "../src/persistence";
+import { ProjectPaths } from "../src/paths";
 
 asSubcommand(async (project) => {
   // build list of derivations
