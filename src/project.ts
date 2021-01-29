@@ -28,8 +28,8 @@ export class Project {
 
   public readonly config: LoadedStore<ConfigFile, Config>;
   public readonly credentials: LoadedStore<CredentialsFile, Credentials>;
-  public readonly resolver: PathResolver;
   public readonly internal: LoadedStore<InternalFile, Internal>;
+  public readonly resolver: PathResolver;
 
   private constructor(
     resolver: PathResolver,
@@ -44,20 +44,25 @@ export class Project {
   }
 
   /**
-   * Walks through the project tree, recursively yielding this project and
-   * any subprojects.
+   * Walks through the project tree. Subprojects are yielded before parents
+   * so dependencies can be dealt with first.
    */
-  public async *walk(): AsyncGenerator<Project> {
-    yield this;
+  public async *walk(visitedPaths: string[] = []): AsyncGenerator<Project> {
     const childPaths: string[] = this.config.subprojects ?? [];
     for (const relPath of childPaths) {
       const absPath: string = await this.resolver.resolve({
         type: "directory",
         relPath: relPath,
       });
+      if (visitedPaths.includes(absPath)) {
+        // only visit nodes once
+        continue;
+      }
+      visitedPaths.push(absPath);
       // noinspection BadExpressionStatementJS - yes it is, WebStorm
-      yield* (await Project.open(absPath)).walk();
+      yield* (await Project.open(absPath)).walk(visitedPaths);
     }
+    yield this;
   }
 
   /**

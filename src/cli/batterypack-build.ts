@@ -16,20 +16,9 @@ asSubcommandTaskTree({
   filename: __filename,
   ctx: {},
   tasks: async (project: Project) => {
-    /*
-      Build an array of subprojects by walking down the subproject tree.
-      The array is then reversed, allowing dependent subprojects to be built
-      first.
-    */
-    let subprojects: Project[] = [];
-    for await (const subproject of project.walk()) {
-      subprojects.push(subproject);
-    }
-    subprojects.reverse();
-
-    // build tasks for each subproject
+    // build project-level tasks for each subproject
     const tasks: Task<BuildContext>[] = [];
-    for (const subproject of subprojects) {
+    for await (const subproject of project.walk()) {
       tasks.push({
         description: await subproject.resolver.resolve(ProjectPaths.root),
         shouldSkip: async () => {
