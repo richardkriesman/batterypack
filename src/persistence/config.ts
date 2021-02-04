@@ -44,6 +44,11 @@ export interface Config {
    * subproject root must have a batterypack.yml file.
    */
   subprojects?: string[];
+
+  /**
+   * Use legacy CommonJS modules instead of native ECMAScript modules.
+   */
+  useLegacyModules?: boolean;
 }
 
 /**

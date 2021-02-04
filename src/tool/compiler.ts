@@ -19,7 +19,7 @@ export async function makeCompilerConfig(project: Project): Promise<any> {
       experimentalDecorators: true,
       incremental: true,
       lib: ["ES2020"],
-      module: "commonjs",
+      module: project.config.useLegacyModules ? "commonjs" : "ES2020",
       moduleResolution: "node",
       noImplicitAny: true,
       noImplicitReturns: true,
