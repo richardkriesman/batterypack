@@ -31,3 +31,17 @@ declare module "madge" {
     skipped: string[];
   };
 }
+
+declare module "typescript-transform-paths" {
+  export default function (
+    program: any,
+    config: {
+      afterDeclarations: boolean;
+    },
+    tsInstance: {
+      // The TypeScript module can be passed in here, but that's not necessary
+      // for batterypack.
+      ts: any;
+    }
+  ): any;
+}

@@ -1,7 +1,7 @@
 import * as TypeScript from "typescript";
 import { PathResolver, ProjectPaths } from "../paths";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
-import { default as createPathTransformer } from "@zerollup/ts-transform-paths";
+import { default as createPathTransformer } from "typescript-transform-paths";
 import { Project } from "../project";
 
 /**
@@ -76,10 +76,30 @@ export class Compiler {
     });
 
     // build transformer factories
-    const pathTransformer = createPathTransformer(program);
     const transformers: TypeScript.CustomTransformers = {
-      afterDeclarations: [pathTransformer.afterDeclarations!],
-      before: [createKeyTransformer(program), pathTransformer.before!],
+      afterDeclarations: [
+        createPathTransformer(
+          program,
+          {
+            afterDeclarations: true,
+          },
+          {
+            ts: undefined,
+          }
+        ),
+      ],
+      before: [
+        createKeyTransformer(program),
+        createPathTransformer(
+          program,
+          {
+            afterDeclarations: false,
+          },
+          {
+            ts: undefined,
+          }
+        ),
+      ],
     };
 
     return new CompilationUnit(this.project, program, transformers);

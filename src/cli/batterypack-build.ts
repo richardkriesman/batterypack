@@ -104,7 +104,12 @@ function makeProjectBuildTasks(
     {
       description: "Compiling project",
       fn: async (ctx) => {
+        // build source
         await ctx.compilationUnit!.build();
+
+        // update project fingerprint
+        project.internal.sourceFingerprint = await project.getSourceFingerprint();
+        await project.internal.flush();
       },
       formatError: (err) => {
         if (err instanceof CompilerErrorSet) {
@@ -123,13 +128,6 @@ function makeProjectBuildTasks(
           return errorMessages.join("\n\n");
         }
         return;
-      },
-    },
-    {
-      description: "Updating project state",
-      fn: async () => {
-        project.internal.sourceFingerprint = await project.getSourceFingerprint();
-        await project.internal.flush();
       },
     },
   ];
