@@ -8,6 +8,8 @@ import {
   YarnDerivation,
 } from "../persistence";
 import { ProjectPaths } from "../paths";
+import { JestDerivation } from "@project/persistence/derivation/jest";
+import { PrettierDerivation } from "@project/persistence/derivation/prettier";
 
 asSubcommandTaskTree({
   filename: __filename,
@@ -15,6 +17,8 @@ asSubcommandTaskTree({
   tasks: async (project) => {
     // build list of derivations
     const derivations: Derivation[] = [
+      new JestDerivation(),
+      new PrettierDerivation(),
       new TypeScriptDerivation(),
       new YarnDerivation(),
     ];

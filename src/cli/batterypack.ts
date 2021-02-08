@@ -11,6 +11,7 @@ Commander.program
   .command("clean", "delete build artifacts")
   .command("credentials", "manage user credentials")
   .command("sync", "sync project configuration files")
+  .command("test", "run unit tests against the project")
   .parseAsync()
   .catch((err) => {
     console.error(err);

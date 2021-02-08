@@ -20,6 +20,6 @@ export class TypeScriptDerivation implements Derivation {
         "Changes will be overwritten!",
       ...(await makeCompilerConfig(project)),
     };
-    return Buffer.from(JSON.stringify(contents), "utf-8");
+    return Buffer.from(JSON.stringify(contents, null, 2), "utf-8");
   }
 }

@@ -46,6 +46,47 @@ export interface Config {
   subprojects?: string[];
 
   /**
+   * Configure how unit tests are run.
+   */
+  unitTest?: {
+    /**
+     * Configure code coverage collection and rules.
+     */
+    coverage?: {
+      /**
+       * Whether code coverage checks are enabled.
+       */
+      enabled?: boolean;
+      /**
+       * Rules which must be met for code coverage checks to pass.
+       */
+      rules?: {
+        /**
+         * Minimum percent of branch coverage.
+         */
+        minBranchCoverage?: number;
+        /**
+         * Minimum percent of function coverage.
+         */
+        minFunctionCoverage?: number;
+        /**
+         * Minimum percent of line coverage.
+         */
+        minLineCoverage?: number;
+        /**
+         * Minimum percent of statement coverage.
+         */
+        minStatementCoverage?: number;
+      };
+      /**
+       * Regular expressions which match file paths to ignore. These paths
+       * are relative to the project's source directory.
+       */
+      ignore?: string[];
+    };
+  };
+
+  /**
    * Use legacy CommonJS modules instead of native ECMAScript modules.
    */
   useLegacyModules?: boolean;

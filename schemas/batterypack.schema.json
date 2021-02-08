@@ -118,6 +118,66 @@
         "examples": ["subproject-a"]
       }
     },
+    "unitTest": {
+      "$id": "#/properties/unitTest",
+      "title": "Unit tests",
+      "description": "Run unit tests in your projects.",
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "$id": "#/properties/unitTest/properties/coverage",
+          "title": "Code coverage",
+          "description": "Analyze test coverage and enforce minimum coverage requirements.",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/enabled",
+              "title": "Enable code coverage",
+              "description": "Whether code coverage checks are enabled. This may cause a performance impact on your tests.",
+              "type": "boolean"
+            },
+            "rules": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/rules",
+              "title": "Code coverage rules",
+              "description": "Rules which must be met for code coverage checks to pass.",
+              "type": "object",
+              "properties": {
+                "minBranchCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minBranchCoverage",
+                  "title": "Minimum branch coverage (percent)",
+                  "type": "integer"
+                },
+                "minFunctionCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minFunctionCoverage",
+                  "title": "Minimum function coverage (percent)",
+                  "type": "integer"
+                },
+                "minLineCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minLineCoverage",
+                  "title": "Minimum line coverage (percent)",
+                  "type": "integer"
+                },
+                "minStatementCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minStatementCoverage",
+                  "title": "Minimum statement coverage (percent)",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "ignore": {
+          "$id": "#/properties/unitTest/properties/ignore",
+          "title": "Ignored file patterns",
+          "description": "Regular expressions which match file paths to ignore. These paths are relative to the project's source directory.",
+          "type": "array",
+          "items": {
+            "$id": "#/properties/unitTest/properties/ignore/items",
+            "type": "string"
+          }
+        }
+      }
+    },
     "useLegacyModules": {
       "$id": "#/properties/useLegacyModules",
       "title": "Use legacy modules",
