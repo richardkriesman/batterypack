@@ -163,17 +163,17 @@
                   "type": "integer"
                 }
               }
+            },
+            "ignore": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/ignore",
+              "title": "Ignored file patterns",
+              "description": "Regular expressions which match file paths to ignore. These paths are relative to the project's source directory.",
+              "type": "array",
+              "items": {
+                "$id": "#/properties/unitTest/properties/coverage/properties/ignore/items",
+                "type": "string"
+              }
             }
-          }
-        },
-        "ignore": {
-          "$id": "#/properties/unitTest/properties/ignore",
-          "title": "Ignored file patterns",
-          "description": "Regular expressions which match file paths to ignore. These paths are relative to the project's source directory.",
-          "type": "array",
-          "items": {
-            "$id": "#/properties/unitTest/properties/ignore/items",
-            "type": "string"
           }
         }
       }

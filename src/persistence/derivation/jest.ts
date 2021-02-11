@@ -33,6 +33,12 @@ async function generateJestConfig(project: Project) {
       ),
     },
     testMatch: ["**/__tests__/**/*.+(ts|tsx)"],
+    moduleNameMapper: {
+      "^@project/(.*)$": Path.join(
+        await project.resolver.resolve(ProjectPaths.dirs.source),
+        "$1"
+      ),
+    },
     collectCoverage: !!project.config.unitTest?.coverage?.enabled,
     coveragePathIgnorePatterns: project.config.unitTest?.coverage?.ignore,
     coverageThreshold: project.config.unitTest?.coverage?.rules
