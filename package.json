@@ -1,7 +1,7 @@
 {
   "name": "batterypack",
   "description": "An opinionated, \"batteries included\" project management and build tool.",
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.7",
   "author": "Richard Kriesman <rkriesman@gmail.com>",
   "license": "MIT",
   "publishConfig": {

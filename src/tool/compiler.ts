@@ -13,13 +13,20 @@ export async function makeCompilerConfig(project: Project): Promise<any> {
     compilerOptions: {
       allowJs: false,
       baseUrl: await project.resolver.resolve(ProjectPaths.dirs.source),
+      composite: true,
       declaration: true,
+      declarationMap: true,
       esModuleInterop: true,
       emitDecoratorMetadata: true,
       experimentalDecorators: true,
       incremental: true,
       lib: ["ES2020"],
-      module: project.config.useLegacyModules ? "commonjs" : "ES2020",
+      // TODO: legacy modules are enabled by default - disable when es modules are bug-free
+      module:
+        project.config.useLegacyModules ||
+        project.config.useLegacyModules === undefined
+          ? "commonjs"
+          : "ES2020",
       moduleResolution: "node",
       noImplicitAny: true,
       noImplicitReturns: true,
@@ -42,6 +49,12 @@ export async function makeCompilerConfig(project: Project): Promise<any> {
     },
     include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
     exclude: ["node_modules", "**/__tests__/*"],
+    references:
+      project.config.subprojects?.length ?? 0 > 0
+        ? project.config.subprojects?.map((subprojectPath) => ({
+            path: subprojectPath,
+          }))
+        : undefined,
   };
 }
 

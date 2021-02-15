@@ -1,5 +1,6 @@
 import * as Commander from "commander";
 import Listr from "listr";
+import { performance as Performance } from "perf_hooks";
 import Table from "cli-table";
 import * as WorkerThreads from "worker_threads";
 
@@ -78,12 +79,19 @@ export function asSubcommandTaskTree<C extends object = {}>(
     // foreground
     options.configure?.(Commander.program); // configure arg validation
 
+    // record perf time for reporting
+    let startMs: number = Performance.now();
+
     // build subcommand
     Commander.program
       .option(
-        "--project <project>",
+        "-p, --project <project>",
         "path to the project's root directory",
         process.cwd()
+      )
+      .option(
+        "-t, --time",
+        "report the total time it takes to run this command"
       )
       .action(async () => {
         // build tasks
@@ -132,6 +140,12 @@ export function asSubcommandTaskTree<C extends object = {}>(
       .catch((err) => {
         console.error(`\n${err.stack}`);
         process.exit(1);
+      })
+      .finally(() => {
+        if (Commander.program.opts().time) {
+          const elapsedSec: number = (Performance.now() - startMs) / 1000;
+          console.log(`\n  ⏱  Command ran for ${elapsedSec.toFixed(3)}s.`);
+        }
       });
   } else {
     // background worker thread
