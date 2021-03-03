@@ -7,6 +7,23 @@ import { LoadedStore, YamlStore } from "./store";
  */
 export interface Config {
   /**
+   * Build options
+   */
+  build?: {
+    /**
+     * Target version of the ECMAScript standard to build for.
+     */
+    target?:
+      | "ES2015"
+      | "ES2016"
+      | "ES2017"
+      | "ES2018"
+      | "ES2019"
+      | "ES2020"
+      | "ESNext";
+  };
+
+  /**
    * Program entrypoint for both the source and compiled code relative to the
    * base directory.
    */

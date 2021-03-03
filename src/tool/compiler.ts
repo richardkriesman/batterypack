@@ -4,11 +4,16 @@ import { default as createKeyTransformer } from "ts-transformer-keys/transformer
 import { default as createPathTransformer } from "typescript-transform-paths";
 import { Project } from "../project";
 
+const DEFAULT_TARGET: string = "ES2020";
+
 /**
  * TypeScript compiler configuration. This is equivalent to what would be found
  * in tsconfig.json.
  */
-export async function makeCompilerConfig(project: Project): Promise<any> {
+export async function makeCompilerConfig(
+  project: Project,
+  excludeTests: boolean = true
+): Promise<any> {
   return {
     compilerOptions: {
       allowJs: false,
@@ -20,7 +25,7 @@ export async function makeCompilerConfig(project: Project): Promise<any> {
       emitDecoratorMetadata: true,
       experimentalDecorators: true,
       incremental: true,
-      lib: ["ES2020"],
+      lib: [project.config.build?.target ?? DEFAULT_TARGET],
       // TODO: legacy modules are enabled by default - disable when es modules are bug-free
       module:
         project.config.useLegacyModules ||
@@ -42,13 +47,13 @@ export async function makeCompilerConfig(project: Project): Promise<any> {
       strictFunctionTypes: true,
       strictNullChecks: true,
       stripInternal: true,
-      target: "ES2020",
+      target: project.config.build?.target ?? DEFAULT_TARGET,
       tsBuildInfoFile: await project.resolver.resolve(
         ProjectPaths.files.buildInfo
       ),
     },
     include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
-    exclude: ["node_modules", "**/__tests__/*"],
+    exclude: ["node_modules"].concat(excludeTests ? ["**/__tests__/*"] : []),
     references:
       project.config.subprojects?.length ?? 0 > 0
         ? project.config.subprojects?.map((subprojectPath) => ({

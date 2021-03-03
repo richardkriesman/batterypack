@@ -1401,9 +1401,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"batterypack@npm:0.1.0-alpha.5":
-  version: 0.1.0-alpha.5
-  resolution: "batterypack@npm:0.1.0-alpha.5"
+"batterypack@npm:0.1.0-alpha.7":
+  version: 0.1.0-alpha.7
+  resolution: "batterypack@npm:0.1.0-alpha.7"
   dependencies:
     "@types/node": ^14.14.22
     "@zerollup/ts-transform-paths": ^1.7.18
@@ -1425,7 +1425,7 @@ __metadata:
     xxhashjs: ^0.2.2
   bin:
     batterypack: build/cli/batterypack.js
-  checksum: 9c2e15c623db6847574018bd2cd779118d048257e057ea3727964efa4b2acc45cb76448666fe1e4372e1392a52d3ed5164d115751e4c746c673e2d4bdc728d5b
+  checksum: 728b24e5f810472b531fda607df5a7de61ad206f69ace96da08672a0568949df004dfa6f22ac93abc1d7f7323ce26988e4f15d3930e91ede7cdddb9dbc2b3843
   languageName: node
   linkType: hard
 
@@ -1444,7 +1444,7 @@ __metadata:
     "@types/xxhashjs": ^0.2.2
     "@zerollup/ts-transform-paths": ^1.7.18
     aws-sdk: ^2.829.0
-    batterypack: 0.1.0-alpha.5
+    batterypack: 0.1.0-alpha.7
     chalk: ^4.1.0
     cli-table: ^0.3.4
     commander: ^7.0.0
