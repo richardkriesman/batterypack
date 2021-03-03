@@ -20,6 +20,28 @@
     }
   ],
   "properties": {
+    "build": {
+      "$id": "#/properties/build",
+      "title": "Build options",
+      "type": "object",
+      "properties": {
+        "target": {
+          "$id": "#/properties/build/properties/target",
+          "title": "Build target",
+          "description": "Target version of the ECMAScript standard version to build for.",
+          "type": "string",
+          "enum": [
+            "ES2015",
+            "ES2016",
+            "ES2017",
+            "ES2018",
+            "ES2019",
+            "ES2020",
+            "ESNext"
+          ]
+        }
+      }
+    },
     "entrypoint": {
       "$id": "#/properties/entrypoint",
       "title": "Program entrypoint",
