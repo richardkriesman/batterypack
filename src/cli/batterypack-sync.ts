@@ -1,5 +1,6 @@
 import "source-map-support/register";
-import { asSubcommandTaskTree, Task } from "../ui";
+
+import { asSubcommandTaskTree, Task } from "@project/ui";
 import {
   Derivation,
   DerivationBuilder,
@@ -7,7 +8,7 @@ import {
   TypeScriptDerivation,
   YarnDerivation,
 } from "../persistence";
-import { ProjectPaths } from "../paths";
+import { ProjectPaths } from "@project/paths";
 import { JestDerivation } from "@project/persistence/derivation/jest";
 import { PrettierDerivation } from "@project/persistence/derivation/prettier";
 

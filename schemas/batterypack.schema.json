@@ -19,6 +19,7 @@
       "subprojects": ["subproject-a"]
     }
   ],
+  "required": ["name"],
   "properties": {
     "build": {
       "$id": "#/properties/build",

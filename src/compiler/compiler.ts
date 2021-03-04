@@ -1,67 +1,10 @@
 import * as TypeScript from "typescript";
-import { PathResolver, ProjectPaths } from "../paths";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "typescript-transform-paths";
-import { Project } from "../project";
 
-const DEFAULT_TARGET: string = "ES2020";
-
-/**
- * TypeScript compiler configuration. This is equivalent to what would be found
- * in tsconfig.json.
- */
-export async function makeCompilerConfig(
-  project: Project,
-  excludeTests: boolean = true
-): Promise<any> {
-  return {
-    compilerOptions: {
-      allowJs: false,
-      baseUrl: await project.resolver.resolve(ProjectPaths.dirs.source),
-      composite: true,
-      declaration: true,
-      declarationMap: true,
-      esModuleInterop: true,
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true,
-      incremental: true,
-      lib: [project.config.build?.target ?? DEFAULT_TARGET],
-      // TODO: legacy modules are enabled by default - disable when es modules are bug-free
-      module:
-        project.config.useLegacyModules ||
-        project.config.useLegacyModules === undefined
-          ? "commonjs"
-          : "ES2020",
-      moduleResolution: "node",
-      noImplicitAny: true,
-      noImplicitReturns: true,
-      noImplicitThis: true,
-      outDir: await project.resolver.resolve(ProjectPaths.dirs.build),
-      paths: {
-        "@project/*": ["*"],
-      },
-      preserveConstEnums: true,
-      rootDir: await project.resolver.resolve(ProjectPaths.dirs.source),
-      sourceMap: true,
-      strictBindCallApply: true,
-      strictFunctionTypes: true,
-      strictNullChecks: true,
-      stripInternal: true,
-      target: project.config.build?.target ?? DEFAULT_TARGET,
-      tsBuildInfoFile: await project.resolver.resolve(
-        ProjectPaths.files.buildInfo
-      ),
-    },
-    include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
-    exclude: ["node_modules"].concat(excludeTests ? ["**/__tests__/*"] : []),
-    references:
-      project.config.subprojects?.length ?? 0 > 0
-        ? project.config.subprojects?.map((subprojectPath) => ({
-            path: subprojectPath,
-          }))
-        : undefined,
-  };
-}
+import { makeTypescriptConfig } from "@project/compiler/config";
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { Project } from "@project/project";
 
 /**
  * Compiles a {@link PathResolver}'s source code, written in TypeScript, to
@@ -82,7 +25,15 @@ export class Compiler {
   public async prepare(): Promise<CompilationUnit> {
     // parse config
     const commandLine = TypeScript.parseJsonConfigFileContent(
-      await makeCompilerConfig(this.project),
+      await makeTypescriptConfig({
+        sourcePath: await this.project.resolver.resolve(
+          ProjectPaths.dirs.source
+        ),
+        buildPath: await this.project.resolver.resolve(ProjectPaths.dirs.build),
+        excludeTests: true,
+        target: this.project.config.build?.target,
+        useLegacyModules: this.project.config.useLegacyModules,
+      }),
       TypeScript.sys,
       await this.project.resolver.resolve(ProjectPaths.root)
     );

@@ -1,12 +1,13 @@
 import "source-map-support/register";
 import Chalk from "chalk";
-import { CompilationUnit, Compiler, CompilerErrorSet } from "../tool/compiler";
-import { asSubcommandTaskTree, Task } from "../ui";
-import { CircularDependencyError, Detective } from "../tool/detective";
-import { Formatter } from "../tool/formatter";
-import { Project } from "../project";
-import { ProjectPaths } from "../paths";
-import { doesFileExist } from "../io";
+
+import { CompilationUnit, Compiler, CompilerErrorSet } from "@project/compiler";
+import { asSubcommandTaskTree, Task } from "@project/ui";
+import { CircularDependencyError, Detective } from "@project/detective";
+import { Formatter } from "@project/formatter";
+import { Project } from "@project/project";
+import { ProjectPaths } from "@project/paths";
+import { doesFileExist } from "@project/io";
 
 interface BuildContext {
   compilationUnit?: CompilationUnit;

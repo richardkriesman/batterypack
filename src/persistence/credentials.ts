@@ -1,6 +1,7 @@
 import { CodeArtifact, SharedIniFileCredentials } from "aws-sdk";
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Map of user credentials. These credentials are specific to the user and must

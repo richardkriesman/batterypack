@@ -4,9 +4,9 @@ import { performance as Performance } from "perf_hooks";
 import Table from "cli-table";
 import * as WorkerThreads from "worker_threads";
 
-import { Project } from "./project";
-import { BatterypackError } from "./error";
-import { DeepReadonly } from "./immutable";
+import { Project } from "@project/project";
+import { BatterypackError } from "@project/error";
+import { DeepReadonly } from "@project/immutable";
 
 export interface Task<C = {}> {
   description: string;

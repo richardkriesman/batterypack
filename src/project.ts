@@ -2,15 +2,16 @@ import * as Crypto from "crypto";
 import * as FS from "fs";
 import * as Path from "path";
 import * as XXH from "xxhashjs";
-import { PathResolver, ProjectPaths } from "./paths";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
 import {
   Config,
   ConfigFile,
   Credentials,
   CredentialsFile,
   LoadedStore,
-} from "./persistence";
-import { Internal, InternalFile } from "./persistence/internal";
+} from "@project/persistence";
+import { Internal, InternalFile } from "@project/persistence/internal";
 
 /**
  * Manage a batterypack project.
@@ -133,6 +134,21 @@ export class Project {
     }
 
     return hash.digest().toString(16);
+  }
+
+  /**
+   * Gets an array of subprojects.
+   */
+  public async getSubprojects(): Promise<readonly Project[]> {
+    return Promise.all(
+      (this.config.subprojects ?? []).map(async (relPath) => {
+        const absPath: string = await this.resolver.resolve({
+          type: "directory",
+          relPath: relPath,
+        });
+        return await Project.open(absPath);
+      })
+    );
   }
 
   public flush(): Promise<[void, void, void]> {
