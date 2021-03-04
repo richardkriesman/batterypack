@@ -76,7 +76,7 @@ export async function makeTypescriptConfig(options: CompilerConfigOptions) {
           await Promise.all(
             subprojects.map(async (subproject) => [
               subproject.config.name,
-              [await subproject.resolver.resolve(ProjectPaths.root)],
+              [await subproject.resolver.resolve(ProjectPaths.dirs.source)],
             ])
           )
         ),
