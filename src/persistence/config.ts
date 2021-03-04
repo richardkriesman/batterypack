@@ -1,5 +1,5 @@
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Project persistence representation. batterypack uses this persistence to
@@ -40,7 +40,7 @@ export interface Config {
   /**
    * Name of the project.
    */
-  name?: string;
+  name: string;
 
   /**
    * Registries can be configured on a per-scope basis by adding them here.
@@ -125,7 +125,9 @@ export class ConfigFile extends YamlStore<Config> {
     );
     let config: Config | undefined = await super.readData<Config>(configPath);
     if (config === undefined) {
-      config = {};
+      throw new Error(
+        `Project configuration file does not exist at ${configPath}.`
+      );
     }
     return super.bindDynamicAccessors<ConfigFile, Config>(
       new ConfigFile(config, configPath)

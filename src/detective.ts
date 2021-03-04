@@ -1,6 +1,8 @@
 import madge from "madge";
-import { makeCompilerConfig } from "./compiler";
-import { Project } from "../project";
+
+import { Project } from "@project/project";
+import { makeTypescriptConfig } from "@project/compiler";
+import { ProjectPaths } from "@project/paths";
 
 /**
  * Analyzes the project's source code to detect potential issues.
@@ -20,7 +22,15 @@ export class Detective {
   public async assertNoCircularDependencies(): Promise<void> {
     const entrypointPath: string = await this.project.getSourceEntrypoint();
     const madgeObj = await madge(entrypointPath, {
-      tsConfig: await makeCompilerConfig(this.project),
+      tsConfig: await makeTypescriptConfig({
+        sourcePath: await this.project.resolver.resolve(
+          ProjectPaths.dirs.source
+        ),
+        buildPath: await this.project.resolver.resolve(ProjectPaths.dirs.build),
+        excludeTests: true,
+        target: this.project.config.build?.target,
+        useLegacyModules: this.project.config.useLegacyModules,
+      }),
       fileExtensions: ["ts", "tsx"],
     });
     const circles: string[][] = madgeObj.circular();

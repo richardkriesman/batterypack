@@ -1,5 +1,5 @@
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Internal state that is not meant to be modified by the user.

@@ -40,7 +40,6 @@ export const ProjectPaths: {
   files: {
     defaultBuildEntrypoint: ProjectPath;
     defaultSourceEntrypoint: ProjectPath;
-    buildInfo: ProjectPath;
     config: ProjectPath;
     credentials: ProjectPath;
     internalState: ProjectPath;
@@ -72,10 +71,6 @@ export const ProjectPaths: {
     defaultSourceEntrypoint: {
       type: "file",
       relPath: "src/index.ts",
-    },
-    buildInfo: {
-      type: "file",
-      relPath: ".batterypack/typescript/tsconfig.tsbuildinfo",
     },
     config: {
       type: "file",
