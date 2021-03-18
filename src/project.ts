@@ -135,11 +135,7 @@ export class Project {
     return hash.digest().toString(16);
   }
 
-  public flush(): Promise<[void, void, void]> {
-    return Promise.all([
-      this.config.flush(),
-      this.credentials.flush(),
-      this.internal.flush(),
-    ]);
+  public flush(): Promise<[void, void]> {
+    return Promise.all([this.credentials.flush(), this.internal.flush()]);
   }
 }

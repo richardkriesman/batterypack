@@ -1,5 +1,7 @@
 import "source-map-support/register";
 import Chalk from "chalk";
+import * as Path from "path";
+
 import { CompilationUnit, Compiler, CompilerErrorSet } from "../tool/compiler";
 import { asSubcommandTaskTree, Task } from "../ui";
 import { CircularDependencyError, Detective } from "../tool/detective";
@@ -18,9 +20,14 @@ asSubcommandTaskTree({
   tasks: async (project: Project) => {
     // build project-level tasks for each subproject
     const tasks: Task<BuildContext>[] = [];
+    const rootPath: string = await project.resolver.resolve(ProjectPaths.root);
     for await (const subproject of project.walk()) {
+      const relPath: string = Path.relative(
+        rootPath,
+        await subproject.resolver.resolve(ProjectPaths.root)
+      );
       tasks.push({
-        description: await subproject.resolver.resolve(ProjectPaths.root),
+        description: `Building ${relPath}`,
         shouldSkip: async () => {
           // skip if the source entrypoint doesn't exist
           if (!(await doesFileExist(await subproject.getSourceEntrypoint()))) {

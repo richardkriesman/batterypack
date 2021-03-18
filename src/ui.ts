@@ -7,6 +7,7 @@ import * as WorkerThreads from "worker_threads";
 import { Project } from "./project";
 import { BatterypackError } from "./error";
 import { DeepReadonly } from "./immutable";
+import { TreeNode } from "@project/types";
 
 export interface Task<C = {}> {
   description: string;
@@ -319,7 +320,7 @@ export function asSubcommand(
   }
   Commander.program
     .option(
-      "--project <project>",
+      "-p, --project <project>",
       "path to the project's root directory",
       process.cwd()
     )
@@ -365,4 +366,37 @@ export function printTable(options: {
 
   // print table
   console.log(table.toString());
+}
+
+/**
+ * Prints a tree of strings.
+ *
+ * @param root Root node
+ */
+export function formatTree(root: TreeNode<string>): string {
+  let lines: string[] = [];
+
+  function fn(node: TreeNode<string>, level: number): void {
+    // format line
+    let line: string = "";
+    for (let i = 0; i < level; i++) {
+      line += "│ ";
+    }
+    line += `└── ${node.value}`;
+    lines.push(line);
+
+    // recursively format children
+    for (const child of node.children) {
+      fn(child, level + 1);
+    }
+  }
+
+  // format root and direct children of root
+  lines.push(root.value);
+  for (const child of root.children) {
+    fn(child, 0);
+  }
+
+  // return lines
+  return lines.join("\n");
 }

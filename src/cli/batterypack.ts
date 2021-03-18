@@ -10,6 +10,7 @@ Commander.program
   .command("build", "compile project source code")
   .command("clean", "delete build artifacts")
   .command("credentials", "manage user credentials")
+  .command("subproject", "manage subprojects")
   .command("sync", "sync project configuration files")
   .command("test", "run unit tests against the project")
   .parseAsync()
