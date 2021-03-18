@@ -1,5 +1,5 @@
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Project persistence representation. batterypack uses this persistence to
@@ -33,7 +33,12 @@ export interface Config {
   };
 
   /**
-   * ignore rules
+   * Docker ignore rules
+   */
+  dockerignore?: string[];
+
+  /**
+   * Git ignore rules
    */
   gitignore?: string[];
 

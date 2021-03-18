@@ -42,6 +42,19 @@
         }
       }
     },
+    "dockerignore": {
+      "$id": "#/properties/dockerignore",
+      "title": "Additional dockerignore rules",
+      "type": "array",
+      "examples": [["/build"]],
+      "items": {
+        "$id": "#/properties/dockerignore/items",
+        "type": "string",
+        "examples": ["/build"]
+      },
+      "uniqueItems": true,
+      "additionalItems": true
+    },
     "entrypoint": {
       "$id": "#/properties/entrypoint",
       "title": "Program entrypoint",
