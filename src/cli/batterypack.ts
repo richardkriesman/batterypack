@@ -2,7 +2,7 @@
 import "source-map-support/register";
 import * as Commander from "commander";
 
-const META = require("../../package.json");
+import { META } from "@project/meta";
 
 // register subcommands
 Commander.program

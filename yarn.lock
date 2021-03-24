@@ -1401,9 +1401,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"batterypack@npm:0.1.0-alpha.8":
-  version: 0.1.0-alpha.8
-  resolution: "batterypack@npm:0.1.0-alpha.8"
+"batterypack@npm:0.1.0-alpha.11":
+  version: 0.1.0-alpha.11
+  resolution: "batterypack@npm:0.1.0-alpha.11"
   dependencies:
     "@types/node": ^14.14.22
     "@zerollup/ts-transform-paths": ^1.7.18
@@ -1425,7 +1425,7 @@ __metadata:
     xxhashjs: ^0.2.2
   bin:
     batterypack: build/cli/batterypack.js
-  checksum: 23df31ee2c91bd258de4d0d04dd4600be452325096df4177b46bf6d55b20ae4b973347a1bd1967c2904a0d769b9ea491387b57b261671b94b6623050ae6ee8df
+  checksum: 1dd441ff144d694a2f234174d1bda32a1281b96f366e6df1c0a567f3bfdd034967eba54930536ebeb3f16c810e85dddf0f0aefb0f20285cfbf9b8fd1770b9fd7
   languageName: node
   linkType: hard
 
@@ -1444,13 +1444,14 @@ __metadata:
     "@types/xxhashjs": ^0.2.2
     "@zerollup/ts-transform-paths": ^1.7.18
     aws-sdk: ^2.829.0
-    batterypack: 0.1.0-alpha.8
+    batterypack: 0.1.0-alpha.11
     chalk: ^4.1.0
     cli-table: ^0.3.4
     commander: ^7.0.0
     husky: ^4.3.8
     jest: ^26.6.3
     js-yaml: ^4.0.0
+    jsonschema: ^1.4.0
     lint-staged: ^10.5.3
     listr: ^0.14.3
     madge: ^4.0.0
@@ -4204,6 +4205,13 @@ fsevents@^2.1.2:
   bin:
     json5: lib/cli.js
   checksum: 07b1f90c2801dc52df2b0ac8d606cc400a85cda79130e754780fa2ab9805d0fb85a0e61b6a5cdd68e88e5d0c8f9109ec415af08283175556cdccaa8563853908
+  languageName: node
+  linkType: hard
+
+"jsonschema@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "jsonschema@npm:1.4.0"
+  checksum: d2abc356b4b65faacd8ca55beb15fef8c8c2129d3f67a86097b737bf3195a2eb4303623d34a4ec0e830687b681fd517bca2e47b28f6660fa9553126627876c74
   languageName: node
   linkType: hard
 

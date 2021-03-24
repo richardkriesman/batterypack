@@ -3,23 +3,22 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "title": "batterypack configuration",
   "type": "object",
-  "examples": [
-    {
-      "entrypoint": {
-        "build": "build/index.js",
-        "source": "src/index.tsx"
-      },
-      "gitignore": ["/build"],
-      "scopes": {
-        "scope": {
-          "origin": "https://registry.example.com",
-          "credential": "my-credential"
-        }
-      },
-      "subprojects": ["subproject-a"]
-    }
-  ],
+  "required": ["batterypack", "name"],
   "properties": {
+    "batterypack": {
+      "$id": "#/properties/batterypack",
+      "title": "batterypack options",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$id": "#/properties/batterypack/properties/version",
+          "title": "Required version",
+          "description": "Version of batterypack required by this project",
+          "type": "string"
+        }
+      }
+    },
     "build": {
       "$id": "#/properties/build",
       "title": "Build options",
