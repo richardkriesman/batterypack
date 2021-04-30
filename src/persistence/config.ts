@@ -41,6 +41,17 @@ export interface Config {
    */
   build?: {
     /**
+     * Override component configuration options.
+     */
+    overrides: {
+      /**
+       * TypeScript compiler option overrides.
+       */
+      typescript: {
+        [key: string]: string;
+      };
+    };
+    /**
      * Target version of the ECMAScript standard to build for.
      */
     target?:

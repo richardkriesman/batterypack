@@ -1401,9 +1401,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"batterypack@npm:0.1.0-alpha.11":
-  version: 0.1.0-alpha.11
-  resolution: "batterypack@npm:0.1.0-alpha.11"
+"batterypack@npm:0.2.0":
+  version: 0.2.0
+  resolution: "batterypack@npm:0.2.0"
   dependencies:
     "@types/node": ^14.14.22
     "@zerollup/ts-transform-paths": ^1.7.18
@@ -1413,6 +1413,7 @@ __metadata:
     commander: ^7.0.0
     jest: ^26.6.3
     js-yaml: ^4.0.0
+    jsonschema: ^1.4.0
     listr: ^0.14.3
     madge: ^4.0.0
     ora: ^5.2.0
@@ -1425,7 +1426,7 @@ __metadata:
     xxhashjs: ^0.2.2
   bin:
     batterypack: build/cli/batterypack.js
-  checksum: 1dd441ff144d694a2f234174d1bda32a1281b96f366e6df1c0a567f3bfdd034967eba54930536ebeb3f16c810e85dddf0f0aefb0f20285cfbf9b8fd1770b9fd7
+  checksum: ed8135538680007631be0db2cbe3e3f033057ecd7dd56ab0dbf56e5b62631d77c9c46e66629995970c62d69717c6aca7619c396ef3d7eeb321aa3e08630cb6f8
   languageName: node
   linkType: hard
 
@@ -1444,7 +1445,7 @@ __metadata:
     "@types/xxhashjs": ^0.2.2
     "@zerollup/ts-transform-paths": ^1.7.18
     aws-sdk: ^2.829.0
-    batterypack: 0.1.0-alpha.11
+    batterypack: 0.2.0
     chalk: ^4.1.0
     cli-table: ^0.3.4
     commander: ^7.0.0
@@ -1454,7 +1455,7 @@ __metadata:
     jsonschema: ^1.4.0
     lint-staged: ^10.5.3
     listr: ^0.14.3
-    madge: ^4.0.0
+    madge: ^4.0.2
     ora: ^5.2.0
     prettier: ^2.2.1
     source-map-support: ^0.5.19
@@ -2284,6 +2285,18 @@ __metadata:
     node-source-walk: ^4.2.0
     typescript: ^3.9.7
   checksum: 9fb860c6677ec6559db628438fea212215efd82a9ec0d97c510144875dce2ef0390a1893483aa3f2dd490fe43d44ae86eaf5f801a558a1a7d62b31a1f727e976
+  languageName: node
+  linkType: hard
+
+"detective-typescript@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "detective-typescript@npm:7.0.0"
+  dependencies:
+    "@typescript-eslint/typescript-estree": ^4.8.2
+    ast-module-types: ^2.7.1
+    node-source-walk: ^4.2.0
+    typescript: ^3.9.7
+  checksum: c44a28bfd762811cbe3af56ec2c014a82a16040698659a25a33cbb32c12993cc3b64514e820242a8a0b482747ab4b3062509315904803353fdfc3033b1593ebf
   languageName: node
   linkType: hard
 
@@ -4499,6 +4512,38 @@ fsevents@^2.1.2:
   bin:
     madge: ./bin/cli.js
   checksum: 9a2355365802610870f0b30e4c6b81dee4ede0fe4985c97f340f0935ea5c452c9f197f1ad619f6ae254b0acf3ac5b98e39d35522ff6a00d70835817053295504
+  languageName: node
+  linkType: hard
+
+"madge@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "madge@npm:4.0.2"
+  dependencies:
+    chalk: ^4.1.0
+    commander: ^6.2.1
+    commondir: ^1.0.1
+    debug: ^4.0.1
+    dependency-tree: ^8.0.0
+    detective-amd: ^3.0.1
+    detective-cjs: ^3.1.1
+    detective-es6: ^2.1.0
+    detective-less: ^1.0.2
+    detective-postcss: ^4.0.0
+    detective-sass: ^3.0.1
+    detective-scss: ^2.0.1
+    detective-stylus: ^1.0.0
+    detective-typescript: ^7.0.0
+    graphviz: 0.0.9
+    ora: ^5.1.0
+    pluralize: ^8.0.0
+    precinct: ^7.0.0
+    pretty-ms: ^7.0.0
+    rc: ^1.2.7
+    typescript: ^3.9.5
+    walkdir: ^0.4.1
+  bin:
+    madge: bin/cli.js
+  checksum: b149cd70021a59e6c0d179812bd0113413a9aaf5ebb040d204cf65fdec35f3ae0502e3a7f1152de85256ed63ab4eca6089cca5f95caf4716177261d74b159708
   languageName: node
   linkType: hard
 

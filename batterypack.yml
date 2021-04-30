@@ -1,5 +1,6 @@
+batterypack:
+  version: 0.2.0
 name: batterypack
 entrypoint:
   source: src/cli/batterypack.ts
   build: build/cli/batterypack.js
-useLegacyModules: true

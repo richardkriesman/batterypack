@@ -43,6 +43,7 @@ export async function makeCompilerConfig(
       preserveConstEnums: true,
       rootDir: await project.resolver.resolve(ProjectPaths.dirs.source),
       sourceMap: true,
+      skipLibCheck: true, // provides a massive performance boost
       strictBindCallApply: true,
       strictFunctionTypes: true,
       strictNullChecks: true,
@@ -51,6 +52,7 @@ export async function makeCompilerConfig(
       tsBuildInfoFile: await project.resolver.resolve(
         ProjectPaths.files.buildInfo
       ),
+      ...(project.config.build?.overrides?.typescript ?? {}),
     },
     include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
     exclude: ["node_modules"].concat(excludeTests ? ["**/__tests__/*"] : []),

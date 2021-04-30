@@ -24,6 +24,21 @@
       "title": "Build options",
       "type": "object",
       "properties": {
+        "overrides": {
+          "$id": "#/properties/build/properties/overrides",
+          "title": "Configuration overrides",
+          "description": "Override component configuration options.",
+          "type": "object",
+          "properties": {
+            "typescript": {
+              "$id": "#/properties/build/properties/overrides",
+              "title": "Typescript overrides",
+              "description": "TypeScript compiler option overrides.",
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        },
         "target": {
           "$id": "#/properties/build/properties/target",
           "title": "Build target",
