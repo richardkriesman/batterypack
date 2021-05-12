@@ -26,7 +26,6 @@ export async function makeCompilerConfig(
       experimentalDecorators: true,
       incremental: true,
       lib: [project.config.build?.target ?? DEFAULT_TARGET],
-      // TODO: legacy modules are enabled by default - disable when es modules are bug-free
       module:
         project.config.useLegacyModules ||
         project.config.useLegacyModules === undefined

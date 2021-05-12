@@ -3,14 +3,15 @@ import { asSubcommandTaskTree, Task } from "../ui";
 import {
   Derivation,
   DerivationBuilder,
+  DockerIgnoreDerivation,
   GitIgnoreDerivation,
+  JestDerivation,
+  PrettierDerivation,
   TypeScriptDerivation,
   YarnDerivation,
+  YarnDummyCompatDerivation,
 } from "../persistence";
 import { ProjectPaths } from "../paths";
-import { JestDerivation } from "@project/persistence/derivation/jest";
-import { PrettierDerivation } from "@project/persistence/derivation/prettier";
-import { DockerIgnoreDerivation } from "@project/persistence/derivation/dockerignore";
 
 asSubcommandTaskTree({
   filename: __filename,
@@ -22,6 +23,7 @@ asSubcommandTaskTree({
       new PrettierDerivation(),
       new TypeScriptDerivation(),
       new YarnDerivation(),
+      new YarnDummyCompatDerivation(),
     ];
     derivations.push(
       new DockerIgnoreDerivation(derivations),

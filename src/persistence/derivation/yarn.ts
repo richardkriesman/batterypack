@@ -23,6 +23,12 @@ export class YarnDerivation implements Derivation {
     contents += YAML.dump({
       yarnPath: ".yarn/releases/yarn-berry.cjs",
       nodeLinker: "node-modules", // batterypack doesn't support PnP at the moment
+      plugins: [
+        {
+          path: ".yarn/plugins/@yarnpkg/plugin-compat.cjs",
+          spec: "@yarnpkg/plugin-compat",
+        },
+      ],
 
       // registry scopes
       ...(await whenAsync(project.config.scopes, async (target) => {
