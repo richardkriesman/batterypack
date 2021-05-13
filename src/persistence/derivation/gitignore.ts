@@ -48,6 +48,9 @@ yarn-error.log
 build/
 tsconfig.tsbuildinfo
 
+# Jest
+coverage/
+
 # batterypack-managed files
 .batterypack/
 `;

@@ -31,7 +31,7 @@ asSubcommandTaskTree({
         shouldSkip: async () => {
           // skip if the source entrypoint doesn't exist
           if (!(await doesFileExist(await subproject.getSourceEntrypoint()))) {
-            return "Project has no source code";
+            return "No source entrypoint";
           }
 
           // skip if the fingerprint of the source directory matches
@@ -39,7 +39,7 @@ asSubcommandTaskTree({
             subproject.internal.sourceFingerprint ===
             (await subproject.getSourceFingerprint())
           ) {
-            return "Project is already built";
+            return "Up-to-date";
           }
 
           // don't skip, project needs to be built
@@ -115,7 +115,8 @@ function makeProjectBuildTasks(
         await ctx.compilationUnit!.build();
 
         // update project fingerprint
-        project.internal.sourceFingerprint = await project.getSourceFingerprint();
+        project.internal.sourceFingerprint =
+          await project.getSourceFingerprint();
         await project.internal.flush();
       },
       formatError: (err) => {
