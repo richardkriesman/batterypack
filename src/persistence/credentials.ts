@@ -1,6 +1,7 @@
 import { CodeArtifact, SharedIniFileCredentials } from "aws-sdk";
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Map of user credentials. These credentials are specific to the user and must
@@ -40,9 +41,8 @@ export class CredentialsFile extends YamlStore<Credentials> {
     resolver: PathResolver
   ): Promise<LoadedStore<CredentialsFile, Credentials>> {
     const path: string = await resolver.resolve(ProjectPaths.files.credentials);
-    let credentials:
-      | Credentials
-      | undefined = await super.readData<Credentials>(path);
+    let credentials: Credentials | undefined =
+      await super.readData<Credentials>(path);
     if (credentials === undefined) {
       credentials = {
         credentials: {},

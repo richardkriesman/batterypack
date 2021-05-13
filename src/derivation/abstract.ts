@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
-import { Project } from "../../project";
+
+import { Project } from "@project/project";
 
 export interface Derivation {
   /**

@@ -1,5 +1,6 @@
 import "source-map-support/register";
-import { asSubcommandTaskTree, Task } from "../ui";
+
+import { asSubcommandTaskTree, Task } from "@project/ui";
 import {
   Derivation,
   DerivationBuilder,
@@ -10,8 +11,8 @@ import {
   TypeScriptDerivation,
   YarnDerivation,
   YarnDummyCompatDerivation,
-} from "../persistence";
-import { ProjectPaths } from "../paths";
+} from "@project/derivation";
+import { ProjectPaths } from "@project/paths";
 
 asSubcommandTaskTree({
   filename: __filename,

@@ -1,4 +1,4 @@
-import { Derivation } from "@project/persistence";
+import { Derivation } from "@project/derivation";
 import { Project } from "@project/project";
 
 /**

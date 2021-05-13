@@ -1,8 +1,9 @@
 import * as TypeScript from "typescript";
-import { PathResolver, ProjectPaths } from "../paths";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "typescript-transform-paths";
-import { Project } from "../project";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { Project } from "@project/project";
 
 const DEFAULT_TARGET: string = "ES2020";
 

@@ -1,9 +1,9 @@
 import { Buffer } from "buffer";
 import * as YAML from "js-yaml";
 
-import { Derivation } from "./abstract";
-import { whenAsync } from "../../when";
-import { Project } from "../../project";
+import { Derivation } from "@project/derivation/abstract";
+import { whenAsync } from "@project/when";
+import { Project } from "@project/project";
 
 /**
  * Builds the configuration for Yarn.

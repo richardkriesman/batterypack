@@ -2,15 +2,17 @@ import * as Crypto from "crypto";
 import * as FS from "fs";
 import * as Path from "path";
 import * as XXH from "xxhashjs";
-import { PathResolver, ProjectPaths } from "./paths";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
 import {
   Config,
   ConfigFile,
   Credentials,
   CredentialsFile,
   LoadedStore,
-} from "./persistence";
-import { Internal, InternalFile } from "./persistence/internal";
+  Internal,
+  InternalFile,
+} from "@project/persistence";
 
 /**
  * Manage a batterypack project.

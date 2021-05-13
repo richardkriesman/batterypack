@@ -1,6 +1,6 @@
 import * as Path from "path";
 
-import { Derivation } from "@project/persistence";
+import { Derivation } from "@project/derivation";
 import { Project } from "@project/project";
 import { ProjectPaths } from "@project/paths";
 

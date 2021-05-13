@@ -1,6 +1,7 @@
 import madge from "madge";
-import { makeCompilerConfig } from "./compiler";
-import { Project } from "../project";
+
+import { makeCompilerConfig } from "@project/compiler";
+import { Project } from "@project/project";
 
 /**
  * Analyzes the project's source code to detect potential issues.

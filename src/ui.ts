@@ -4,10 +4,10 @@ import { performance as Performance } from "perf_hooks";
 import Table from "cli-table";
 import * as WorkerThreads from "worker_threads";
 
-import { Project } from "./project";
-import { BatterypackError } from "./error";
-import { DeepReadonly } from "./immutable";
+import { Project } from "@project/project";
+import { DeepReadonly } from "@project/immutable";
 import { TreeNode } from "@project/types";
+import { BatterypackError } from "@project/errors";
 
 export interface Task<C = {}> {
   description: string;
@@ -43,9 +43,8 @@ export class Observer {
   }
 
   public on(name: string, fn: (data: any) => void): void {
-    let observers: Array<(data: any) => void> | undefined = this.observers.get(
-      name
-    );
+    let observers: Array<(data: any) => void> | undefined =
+      this.observers.get(name);
     if (observers === undefined) {
       observers = [];
       this.observers.set(name, observers);
@@ -54,9 +53,8 @@ export class Observer {
   }
 
   private onMessage(message: Message): void {
-    const observers:
-      | Array<(data: any) => void>
-      | undefined = this.observers.get(message.name);
+    const observers: Array<(data: any) => void> | undefined =
+      this.observers.get(message.name);
     if (observers === undefined) {
       return;
     }
