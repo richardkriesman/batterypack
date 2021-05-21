@@ -7,63 +7,6 @@ import { Project } from "../project";
 const DEFAULT_TARGET: string = "ES2020";
 
 /**
- * TypeScript compiler configuration. This is equivalent to what would be found
- * in tsconfig.json.
- */
-export async function makeCompilerConfig(
-  project: Project,
-  excludeTests: boolean = true
-): Promise<any> {
-  return {
-    compilerOptions: {
-      allowJs: false,
-      baseUrl: await project.resolver.resolve(ProjectPaths.dirs.source),
-      composite: true,
-      declaration: true,
-      declarationMap: true,
-      esModuleInterop: true,
-      emitDecoratorMetadata: true,
-      experimentalDecorators: true,
-      incremental: true,
-      lib: [project.config.build?.target ?? DEFAULT_TARGET],
-      // TODO: legacy modules are enabled by default - disable when es modules are bug-free
-      module:
-        project.config.useLegacyModules ||
-        project.config.useLegacyModules === undefined
-          ? "commonjs"
-          : "ES2020",
-      moduleResolution: "node",
-      noImplicitAny: true,
-      noImplicitReturns: true,
-      noImplicitThis: true,
-      outDir: await project.resolver.resolve(ProjectPaths.dirs.build),
-      paths: {
-        "@project/*": ["*"],
-      },
-      preserveConstEnums: true,
-      rootDir: await project.resolver.resolve(ProjectPaths.dirs.source),
-      sourceMap: true,
-      strictBindCallApply: true,
-      strictFunctionTypes: true,
-      strictNullChecks: true,
-      stripInternal: true,
-      target: project.config.build?.target ?? DEFAULT_TARGET,
-      tsBuildInfoFile: await project.resolver.resolve(
-        ProjectPaths.files.buildInfo
-      ),
-    },
-    include: [await project.resolver.resolve(ProjectPaths.dirs.source)],
-    exclude: ["node_modules"].concat(excludeTests ? ["**/__tests__/*"] : []),
-    references:
-      project.config.subprojects?.length ?? 0 > 0
-        ? project.config.subprojects?.map((subprojectPath) => ({
-            path: subprojectPath,
-          }))
-        : undefined,
-  };
-}
-
-/**
  * Compiles a {@link PathResolver}'s source code, written in TypeScript, to
  * JavaScript or into an executable.
  */
@@ -75,6 +18,61 @@ export class Compiler {
   }
 
   /**
+   * Generates the TypeScript compiler configuration that would be saved in
+   * a tsconfig.json file.
+   */
+  public async generateConfigFileContents(): Promise<any> {
+    return {
+      compilerOptions: {
+        allowJs: false,
+        baseUrl: await this.project.resolver.resolve(ProjectPaths.dirs.source),
+        composite: true,
+        declaration: true,
+        declarationMap: true,
+        esModuleInterop: true,
+        emitDecoratorMetadata: true,
+        experimentalDecorators: true,
+        incremental: true,
+        lib: [this.project.config.build?.target ?? DEFAULT_TARGET],
+        // TODO: legacy modules are enabled by default - disable when es modules are bug-free
+        module:
+          this.project.config.useLegacyModules ||
+          this.project.config.useLegacyModules === undefined
+            ? "commonjs"
+            : "ES2020",
+        moduleResolution: "node",
+        noImplicitAny: true,
+        noImplicitReturns: true,
+        noImplicitThis: true,
+        outDir: await this.project.resolver.resolve(ProjectPaths.dirs.build),
+        paths: {
+          "@project/*": ["*"],
+        },
+        preserveConstEnums: true,
+        rootDir: await this.project.resolver.resolve(ProjectPaths.dirs.source),
+        sourceMap: true,
+        skipLibCheck: true,
+        strictBindCallApply: true,
+        strictFunctionTypes: true,
+        strictNullChecks: true,
+        stripInternal: true,
+        target: this.project.config.build?.target ?? DEFAULT_TARGET,
+        tsBuildInfoFile: await this.project.resolver.resolve(
+          ProjectPaths.files.buildInfo
+        ),
+      },
+      include: [await this.project.resolver.resolve(ProjectPaths.dirs.source)],
+      exclude: ["node_modules"],
+      references:
+        this.project.config.subprojects?.length ?? 0 > 0
+          ? this.project.config.subprojects?.map((subprojectPath) => ({
+              path: subprojectPath,
+            }))
+          : undefined,
+    };
+  }
+
+  /**
    * Creates a {@link CompilationUnit} by resolving paths, parsing compiler
    * options, and discovering source files. This CompilationUnit can then be
    * compiled into a JavaScript program.
@@ -82,7 +80,7 @@ export class Compiler {
   public async prepare(): Promise<CompilationUnit> {
     // parse config
     const commandLine = TypeScript.parseJsonConfigFileContent(
-      await makeCompilerConfig(this.project),
+      await this.generateConfigFileContents(),
       TypeScript.sys,
       await this.project.resolver.resolve(ProjectPaths.root)
     );

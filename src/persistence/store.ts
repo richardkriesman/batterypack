@@ -1,7 +1,7 @@
 import * as FS from "fs";
 import * as YAML from "js-yaml";
 
-import { doesFileExist } from "../io";
+import { File } from "@project/io";
 
 /**
  * A persistent object storage interface which proxies property accesses to a
@@ -74,7 +74,7 @@ export abstract class YamlStore<T extends object> extends Store<T> {
     path: string
   ): Promise<T | undefined> {
     // if file does not exist, return undefined
-    if (!(await doesFileExist(path))) {
+    if (!(await new File(path).doesExist())) {
       return undefined;
     }
 
