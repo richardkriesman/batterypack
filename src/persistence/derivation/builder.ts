@@ -2,7 +2,7 @@ import * as FS from "fs";
 import * as Path from "path";
 import { Derivation } from "./abstract";
 import { Project } from "../../project";
-import { doesFileExist } from "../../io";
+import { File } from "@project/io";
 
 /**
  * Builds derivation files.
@@ -40,7 +40,7 @@ export class DerivationBuilder {
       );
 
       // link to file in derivation store
-      if (await doesFileExist(linkPath)) {
+      if (await new File(linkPath).doesExist()) {
         await FS.promises.unlink(linkPath);
       }
       await FS.promises.symlink(storePath, linkPath);

@@ -8,7 +8,7 @@ import { CircularDependencyError, Detective } from "../tool/detective";
 import { Formatter } from "../tool/formatter";
 import { Project } from "../project";
 import { ProjectPaths } from "../paths";
-import { doesFileExist } from "../io";
+import { File } from "@project/io";
 
 interface BuildContext {
   compilationUnit?: CompilationUnit;
@@ -30,7 +30,11 @@ asSubcommandTaskTree({
         description: `Building ${relPath}`,
         shouldSkip: async () => {
           // skip if the source entrypoint doesn't exist
-          if (!(await doesFileExist(await subproject.getSourceEntrypoint()))) {
+          if (
+            !(await new File(
+              await subproject.getSourceEntrypoint()
+            ).doesExist())
+          ) {
             return "No source entrypoint";
           }
 
@@ -115,7 +119,8 @@ function makeProjectBuildTasks(
         await ctx.compilationUnit!.build();
 
         // update project fingerprint
-        project.internal.sourceFingerprint = await project.getSourceFingerprint();
+        project.internal.sourceFingerprint =
+          await project.getSourceFingerprint();
         await project.internal.flush();
       },
       formatError: (err) => {
