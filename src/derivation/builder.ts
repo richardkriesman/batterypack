@@ -3,7 +3,7 @@ import * as Path from "path";
 
 import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
-import { doesFileExist } from "@project/io";
+import { File } from "@project/io";
 /**
  * Builds derivation files.
  */
