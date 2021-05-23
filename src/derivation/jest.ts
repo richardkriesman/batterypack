@@ -1,5 +1,3 @@
-import * as Path from "path";
-
 import { Derivation } from "@project/derivation";
 import { Project } from "@project/project";
 import { ProjectPaths } from "@project/paths";
@@ -22,23 +20,13 @@ export class JestDerivation implements Derivation {
  */
 async function generateJestConfig(project: Project) {
   return {
+    clearMocks: true,
     displayName:
       project.config.name ??
-      (await project.resolver.resolve(ProjectPaths.dirs.source)),
-    rootDir: await project.resolver.resolve(ProjectPaths.dirs.source),
+      (await project.resolver.resolve(ProjectPaths.root)),
+    rootDir: await project.resolver.resolve(ProjectPaths.dirs.build),
     testEnvironment: "node",
-    transform: {
-      "^.+\\.tsx?$": Path.resolve(
-        Path.join(require.resolve("ts-jest"), "..", "..")
-      ),
-    },
-    testMatch: ["**/__tests__/**/*.+(ts|tsx)"],
-    moduleNameMapper: {
-      "^@project/(.*)$": Path.join(
-        await project.resolver.resolve(ProjectPaths.dirs.source),
-        "$1"
-      ),
-    },
+    testMatch: ["**/__tests__/**/*.js"],
     collectCoverage: !!project.config.unitTest?.coverage?.enabled,
     coveragePathIgnorePatterns: project.config.unitTest?.coverage?.ignore,
     coverageThreshold: project.config.unitTest?.coverage?.rules

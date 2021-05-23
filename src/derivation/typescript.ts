@@ -1,7 +1,7 @@
 import { Buffer } from "buffer";
 
 import { Derivation } from "@project/derivation/abstract";
-import { makeCompilerConfig } from "@project/compiler";
+import { Compiler } from "@project/compiler";
 import { Project } from "@project/project";
 
 /**
@@ -20,7 +20,7 @@ export class TypeScriptDerivation implements Derivation {
         "Changes will be overwritten!",
       // tests are included in tsconfig.json to work around module resolution
       // issues in WebStorm
-      ...(await makeCompilerConfig(project, false)),
+      ...(await new Compiler(project).generateConfigFileContents()),
     };
     return Buffer.from(JSON.stringify(contents, null, 2), "utf-8");
   }

@@ -1,8 +1,7 @@
 import * as FS from "fs";
 import * as Path from "path";
-
 import { ProjectPath } from "@project/paths/path";
-import { doesDirExist, doesFileExist } from "@project/io";
+import { Directory, File } from "@project/io";
 
 /**
  * Resolves paths for a batterypack project.
@@ -58,12 +57,12 @@ export class PathResolver {
       );
       switch (path.type) {
         case "directory":
-          if (await doesDirExist(absPath)) {
+          if (await new Directory(absPath).doesExist()) {
             return absPath;
           }
           break;
         case "file":
-          if (await doesFileExist(absPath)) {
+          if (await new File(absPath).doesExist()) {
             return absPath;
           }
           break;
