@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 
-import { Derivation } from "@project/persistence/derivation/abstract";
+import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
 
 /**
@@ -47,6 +47,9 @@ yarn-error.log
 # TypeScript
 build/
 tsconfig.tsbuildinfo
+
+# Jest
+coverage/
 
 # batterypack-managed files
 .batterypack/

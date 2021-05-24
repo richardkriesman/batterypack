@@ -1,8 +1,8 @@
 import { Buffer } from "buffer";
 
-import { Derivation } from "./abstract";
-import { Compiler } from "../../tool/compiler";
-import { Project } from "../../project";
+import { Derivation } from "@project/derivation/abstract";
+import { Compiler } from "@project/compiler";
+import { Project } from "@project/project";
 
 /**
  * Builds a tsconfig.json file to configure TypeScript. This file doesn't

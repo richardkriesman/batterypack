@@ -1,7 +1,7 @@
 import * as FS from "fs";
 import * as Path from "path";
-import { ProjectPath } from "./path";
-import { Directory, File } from "../io";
+import { ProjectPath } from "@project/paths/path";
+import { Directory, File } from "@project/io";
 
 /**
  * Resolves paths for a batterypack project.

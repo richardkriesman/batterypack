@@ -78,6 +78,18 @@ export interface Config {
   name: string;
 
   /**
+   * Override component configuration options. This may break your toolchain!
+   */
+  overrides: {
+    /**
+     * TypeScript compiler option overrides.
+     */
+    typescript: {
+      [key: string]: string;
+    };
+  };
+
+  /**
    * Registries can be configured on a per-scope basis by adding them here.
    * Scope names should be added without the @ prefix.
    *

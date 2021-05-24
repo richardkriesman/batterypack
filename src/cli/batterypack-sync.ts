@@ -1,16 +1,18 @@
 import "source-map-support/register";
-import { asSubcommandTaskTree, Task } from "../ui";
+
+import { asSubcommandTaskTree, Task } from "@project/ui";
 import {
   Derivation,
   DerivationBuilder,
+  DockerIgnoreDerivation,
   GitIgnoreDerivation,
+  JestDerivation,
+  PrettierDerivation,
   TypeScriptDerivation,
   YarnDerivation,
-} from "../persistence";
-import { ProjectPaths } from "../paths";
-import { JestDerivation } from "@project/persistence/derivation/jest";
-import { PrettierDerivation } from "@project/persistence/derivation/prettier";
-import { DockerIgnoreDerivation } from "@project/persistence/derivation/dockerignore";
+  YarnDummyCompatDerivation,
+} from "@project/derivation";
+import { ProjectPaths } from "@project/paths";
 
 asSubcommandTaskTree({
   filename: __filename,
@@ -22,6 +24,7 @@ asSubcommandTaskTree({
       new PrettierDerivation(),
       new TypeScriptDerivation(),
       new YarnDerivation(),
+      new YarnDummyCompatDerivation(),
     ];
     derivations.push(
       new DockerIgnoreDerivation(derivations),

@@ -2,9 +2,9 @@ import { Buffer } from "buffer";
 import * as Path from "path";
 import * as YAML from "js-yaml";
 
-import { Derivation } from "./abstract";
-import { whenAsync } from "../../when";
-import { Project } from "../../project";
+import { Derivation } from "@project/derivation/abstract";
+import { whenAsync } from "@project/when";
+import { Project } from "@project/project";
 import { Directory, File } from "@project/io";
 import { ProjectPaths } from "@project/paths";
 
@@ -19,6 +19,7 @@ export class YarnDerivation implements Derivation {
   toolId = "yarn";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
+    // read the existing .yarnrc file
     const yarnRcFile = new File(
       Path.join(
         await project.resolver.resolve(ProjectPaths.root),
@@ -72,6 +73,12 @@ export class YarnDerivation implements Derivation {
     contents += YAML.dump({
       yarnPath: yarnPath,
       nodeLinker: "node-modules", // batterypack doesn't support PnP at the moment
+      plugins: [
+        {
+          path: ".yarn/plugins/@yarnpkg/plugin-compat.cjs",
+          spec: "@yarnpkg/plugin-compat",
+        },
+      ],
 
       // registry scopes
       ...(await whenAsync(project.config.scopes, async (target) => {

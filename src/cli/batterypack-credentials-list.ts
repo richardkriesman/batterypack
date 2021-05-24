@@ -1,6 +1,7 @@
 import "source-map-support/register";
-import { asSubcommand, printTable } from "../ui";
-import { Project } from "../project";
+
+import { asSubcommand, printTable } from "@project/ui";
+import { Project } from "@project/project";
 
 asSubcommand(async (project: Project) => {
   printTable({

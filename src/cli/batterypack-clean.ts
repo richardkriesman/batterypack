@@ -1,9 +1,10 @@
 import "source-map-support/register";
 import * as FS from "fs";
 import * as Path from "path";
-import { asSubcommandTaskTree, Task } from "../ui";
-import { ProjectPaths } from "../paths";
-import { Project } from "../project";
+
+import { asSubcommandTaskTree, Task } from "@project/ui";
+import { ProjectPaths } from "@project/paths";
+import { Project } from "@project/project";
 
 asSubcommandTaskTree({
   filename: __filename,

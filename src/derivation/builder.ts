@@ -1,9 +1,9 @@
 import * as FS from "fs";
 import * as Path from "path";
-import { Derivation } from "./abstract";
-import { Project } from "../../project";
-import { File } from "@project/io";
 
+import { Derivation } from "@project/derivation/abstract";
+import { Project } from "@project/project";
+import { File } from "@project/io";
 /**
  * Builds derivation files.
  */

@@ -1,6 +1,7 @@
 import { CodeArtifact, SharedIniFileCredentials } from "aws-sdk";
-import { PathResolver, ProjectPaths } from "../paths";
-import { LoadedStore, YamlStore } from "./store";
+
+import { PathResolver, ProjectPaths } from "@project/paths";
+import { LoadedStore, YamlStore } from "@project/persistence/store";
 
 /**
  * Map of user credentials. These credentials are specific to the user and must
@@ -15,7 +16,7 @@ export interface Credentials {
 /**
  * A user credential used for authentication to various services.
  */
-export type Credential = CodeArtifactCredential; // add any other types to support
+export type Credential = CodeArtifactCredential | StaticTokenCredential; // add any other types to support
 
 /**
  * Use an AWS client profile to authenticate to a CodeArtifact NPM registry.
@@ -26,6 +27,14 @@ export interface CodeArtifactCredential {
   domain: string;
   domainOwner: string;
   region: string;
+}
+
+/**
+ * Connect to an NPM registry using a static token.
+ */
+export interface StaticTokenCredential {
+  type: "static-token";
+  token: string;
 }
 
 /**
@@ -40,9 +49,8 @@ export class CredentialsFile extends YamlStore<Credentials> {
     resolver: PathResolver
   ): Promise<LoadedStore<CredentialsFile, Credentials>> {
     const path: string = await resolver.resolve(ProjectPaths.files.credentials);
-    let credentials:
-      | Credentials
-      | undefined = await super.readData<Credentials>(path);
+    let credentials: Credentials | undefined =
+      await super.readData<Credentials>(path);
     if (credentials === undefined) {
       credentials = {
         credentials: {},
@@ -75,10 +83,14 @@ export class CredentialsFile extends YamlStore<Credentials> {
           .promise();
         return token.authorizationToken!;
 
+      // static token
+      case "static-token":
+        return credential.token;
+
       // unsupported credential type
       default:
         throw new TypeError(
-          `Credential of type ${credential.type} does not support ` +
+          `Credential of type ${(credential as any).type} does not support ` +
             "authenticating with an NPM registry."
         );
     }

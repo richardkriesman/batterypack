@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 
-import { Derivation } from "@project/persistence/derivation/abstract";
+import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
 
 /**
