@@ -19,6 +19,7 @@ export class YarnDerivation implements Derivation {
   toolId = "yarn";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
+    // read the existing .yarnrc file
     const yarnRcFile = new File(
       Path.join(
         await project.resolver.resolve(ProjectPaths.root),

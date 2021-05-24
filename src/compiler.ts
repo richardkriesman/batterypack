@@ -61,7 +61,7 @@ export class Compiler {
         tsBuildInfoFile: await this.project.resolver.resolve(
           ProjectPaths.files.buildInfo
         ),
-        ...(this.project.config.build?.overrides?.typescript ?? {}),
+        ...(this.project.config.overrides?.typescript ?? {}),
       },
       include: [await this.project.resolver.resolve(ProjectPaths.dirs.source)],
       exclude: ["node_modules"],

@@ -41,17 +41,6 @@ export interface Config {
    */
   build?: {
     /**
-     * Override component configuration options.
-     */
-    overrides: {
-      /**
-       * TypeScript compiler option overrides.
-       */
-      typescript: {
-        [key: string]: string;
-      };
-    };
-    /**
      * Target version of the ECMAScript standard to build for.
      */
     target?:
@@ -87,6 +76,18 @@ export interface Config {
    * Name of the project.
    */
   name: string;
+
+  /**
+   * Override component configuration options. This may break your toolchain!
+   */
+  overrides: {
+    /**
+     * TypeScript compiler option overrides.
+     */
+    typescript: {
+      [key: string]: string;
+    };
+  };
 
   /**
    * Registries can be configured on a per-scope basis by adding them here.
