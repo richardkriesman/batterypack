@@ -1,0 +1,11 @@
+body {
+  margin: auto;
+  padding: 16px;
+  max-width: 768px;
+}
+
+h1,
+h2,
+p {
+  font-family: "Hack", monospace;
+}

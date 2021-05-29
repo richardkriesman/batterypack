@@ -18,8 +18,9 @@ const SCHEMA_PATH: string = Path.join(
   __dirname,
   "..",
   "..",
+  "pages",
   "schemas",
-  "batterypack.schema.json"
+  "batterypack-0.3.0.schema.json"
 );
 
 /**
