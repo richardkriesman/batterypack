@@ -35,12 +35,7 @@ export class Compiler {
         experimentalDecorators: true,
         incremental: true,
         lib: [this.project.config.build?.target ?? DEFAULT_TARGET],
-        // TODO: legacy modules are enabled by default - disable when es modules are bug-free
-        module:
-          this.project.config.useLegacyModules ||
-          this.project.config.useLegacyModules === undefined
-            ? "commonjs"
-            : "ES2020",
+        module: "commonjs",
         moduleResolution: "node",
         noImplicitAny: true,
         noImplicitReturns: true,

@@ -1,1 +1,0 @@
-/home/apollo/WebstormProjects/batterypack/.batterypack/yarn/.yarn/plugins/@yarnpkg/plugin-compat.cjs

@@ -20,7 +20,7 @@ const SCHEMA_PATH: string = Path.join(
   "..",
   "docs",
   "schemas",
-  "batterypack-0.3.0.schema.json"
+  "batterypack-0.4.0.schema.json"
 );
 
 /**
@@ -150,11 +150,6 @@ export interface Config {
       ignore?: string[];
     };
   };
-
-  /**
-   * Use legacy CommonJS modules instead of native ECMAScript modules.
-   */
-  useLegacyModules?: boolean;
 }
 
 /**

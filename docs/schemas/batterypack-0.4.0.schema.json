@@ -1,0 +1,232 @@
+{
+  "$id": "https://batterypack.richardkriesman.com/schemas/batterypack.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "batterypack configuration",
+  "type": "object",
+  "required": ["batterypack", "name"],
+  "properties": {
+    "batterypack": {
+      "$id": "#/properties/batterypack",
+      "title": "batterypack options",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$id": "#/properties/batterypack/properties/version",
+          "title": "Required version",
+          "description": "Version of batterypack required by this project",
+          "type": "string"
+        }
+      }
+    },
+    "build": {
+      "$id": "#/properties/build",
+      "title": "Build options",
+      "type": "object",
+      "properties": {
+        "target": {
+          "$id": "#/properties/build/properties/target",
+          "title": "Build target",
+          "description": "Target version of the ECMAScript standard version to build for.",
+          "type": "string",
+          "enum": [
+            "ES2015",
+            "ES2016",
+            "ES2017",
+            "ES2018",
+            "ES2019",
+            "ES2020",
+            "ESNext"
+          ]
+        }
+      }
+    },
+    "dockerignore": {
+      "$id": "#/properties/dockerignore",
+      "title": "Additional dockerignore rules",
+      "type": "array",
+      "examples": [["/build"]],
+      "items": {
+        "$id": "#/properties/dockerignore/items",
+        "type": "string",
+        "examples": ["/build"]
+      },
+      "uniqueItems": true,
+      "additionalItems": true
+    },
+    "entrypoint": {
+      "$id": "#/properties/entrypoint",
+      "title": "Program entrypoint",
+      "description": "Program entrypoint for compiled and source code relative to the project root.",
+      "type": "object",
+      "examples": [
+        {
+          "build": "build/index.js",
+          "source": "src/index.tsx"
+        }
+      ],
+      "required": ["build", "source"],
+      "properties": {
+        "build": {
+          "$id": "#/properties/entrypoint/properties/build",
+          "title": "Build entrypoint",
+          "type": "string",
+          "examples": ["build/index.js"]
+        },
+        "source": {
+          "$id": "#/properties/entrypoint/properties/source",
+          "title": "Source entrypoint",
+          "type": "string",
+          "examples": ["src/index.tsx"]
+        }
+      }
+    },
+    "gitignore": {
+      "$id": "#/properties/gitignore",
+      "title": "Additional gitignore rules",
+      "type": "array",
+      "examples": [["/build"]],
+      "items": {
+        "$id": "#/properties/gitignore/items",
+        "type": "string",
+        "examples": ["/build"]
+      },
+      "uniqueItems": true,
+      "additionalItems": true
+    },
+    "name": {
+      "$id": "#/properties/name",
+      "title": "Project name",
+      "type": "string",
+      "examples": ["my-program"]
+    },
+    "overrides": {
+      "$id": "#/properties/overrides",
+      "title": "Configuration overrides",
+      "description": "Override component configuration options. This may break your toolchain!",
+      "type": "object",
+      "properties": {
+        "typescript": {
+          "$id": "#/properties/overrides/properties/typescript",
+          "title": "Typescript overrides",
+          "description": "TypeScript compiler option overrides.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "scopes": {
+      "$id": "#/properties/scopes",
+      "title": "Scoped registries",
+      "description": "Define specific registries to use for package scopes.",
+      "type": "object",
+      "examples": [
+        {
+          "scope": {
+            "origin": "https://registry.example.com",
+            "credential": "my-credential"
+          }
+        }
+      ],
+      "additionalProperties": {
+        "$id": "#/properties/scopes/additionalProperties",
+        "type": "object",
+        "examples": [
+          {
+            "origin": "https://registry.example.com",
+            "credential": "my-credential"
+          }
+        ],
+        "required": ["origin"],
+        "properties": {
+          "origin": {
+            "$id": "#/properties/scopes/additionalProperties/properties/origin",
+            "type": "string",
+            "title": "Registry server origin",
+            "examples": ["https://registry.example.com"]
+          },
+          "credential": {
+            "$id": "#/properties/scopes/additionalProperties/properties/credential",
+            "type": "string",
+            "title": "Credential name",
+            "description": "The name of the credential stored in .batterypack/credentials.yml",
+            "examples": ["my-credential"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "subprojects": {
+      "$id": "#/properties/subprojects",
+      "title": "Subprojects",
+      "type": "array",
+      "examples": [["subproject-a", "subproject-b"]],
+      "items": {
+        "$id": "#/properties/subprojects/items",
+        "type": "string",
+        "examples": ["subproject-a"]
+      }
+    },
+    "unitTest": {
+      "$id": "#/properties/unitTest",
+      "title": "Unit tests",
+      "description": "Run unit tests in your projects.",
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "$id": "#/properties/unitTest/properties/coverage",
+          "title": "Code coverage",
+          "description": "Analyze test coverage and enforce minimum coverage requirements.",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/enabled",
+              "title": "Enable code coverage",
+              "description": "Whether code coverage checks are enabled. This may cause a performance impact on your tests.",
+              "type": "boolean"
+            },
+            "rules": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/rules",
+              "title": "Code coverage rules",
+              "description": "Rules which must be met for code coverage checks to pass.",
+              "type": "object",
+              "properties": {
+                "minBranchCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minBranchCoverage",
+                  "title": "Minimum branch coverage (percent)",
+                  "type": "integer"
+                },
+                "minFunctionCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minFunctionCoverage",
+                  "title": "Minimum function coverage (percent)",
+                  "type": "integer"
+                },
+                "minLineCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minLineCoverage",
+                  "title": "Minimum line coverage (percent)",
+                  "type": "integer"
+                },
+                "minStatementCoverage": {
+                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minStatementCoverage",
+                  "title": "Minimum statement coverage (percent)",
+                  "type": "integer"
+                }
+              }
+            },
+            "ignore": {
+              "$id": "#/properties/unitTest/properties/coverage/properties/ignore",
+              "title": "Ignored file patterns",
+              "description": "Regular expressions which match file paths to ignore. These paths are relative to the project's source directory.",
+              "type": "array",
+              "items": {
+                "$id": "#/properties/unitTest/properties/coverage/properties/ignore/items",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
