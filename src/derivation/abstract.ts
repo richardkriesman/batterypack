@@ -4,13 +4,7 @@ import { Project } from "@project/project";
 
 export interface Derivation {
   /**
-   * A unique string identifying the tool this derivation is building a
-   * file for.
-   */
-  readonly toolId: string;
-
-  /**
-   * A path to the file.
+   * A path to the file relative to the project root.
    */
   readonly filePath: string;
 

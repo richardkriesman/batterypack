@@ -9,7 +9,6 @@ import { Project } from "@project/project";
  */
 export class YarnDummyCompatDerivation implements Derivation {
   readonly filePath: string = ".yarn/plugins/@yarnpkg/plugin-compat.cjs";
-  readonly toolId: string = "yarn";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
     return Buffer.from(

@@ -8,7 +8,6 @@ import { Project } from "@project/project";
  */
 export class DockerIgnoreDerivation implements Derivation {
   filePath = ".dockerignore";
-  toolId = "docker";
 
   private readonly derivations: readonly Derivation[];
 

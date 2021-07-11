@@ -8,7 +8,6 @@ import { Project } from "@project/project";
  */
 export class GitIgnoreDerivation implements Derivation {
   filePath = ".gitignore";
-  toolId = "git";
 
   private readonly derivations: readonly Derivation[];
 

@@ -33,7 +33,6 @@ export class Compiler {
         esModuleInterop: true,
         emitDecoratorMetadata: true,
         experimentalDecorators: true,
-        incremental: true,
         lib: [this.project.config.build?.target ?? DEFAULT_TARGET],
         module: "commonjs",
         moduleResolution: "node",
@@ -53,9 +52,6 @@ export class Compiler {
         strictNullChecks: true,
         stripInternal: true,
         target: this.project.config.build?.target ?? DEFAULT_TARGET,
-        tsBuildInfoFile: await this.project.resolver.resolve(
-          ProjectPaths.files.buildInfo
-        ),
         ...(this.project.config.overrides?.typescript ?? {}),
       },
       include: [await this.project.resolver.resolve(ProjectPaths.dirs.source)],

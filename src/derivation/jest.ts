@@ -7,7 +7,6 @@ import { ProjectPaths } from "@project/paths";
  */
 export class JestDerivation implements Derivation {
   filePath: string = "jest.config.js";
-  toolId: string = "jest";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
     const content = JSON.stringify(await generateJestConfig(project), null, 2);

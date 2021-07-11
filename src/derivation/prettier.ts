@@ -7,7 +7,6 @@ import { Project } from "@project/project";
  */
 export class PrettierDerivation implements Derivation {
   filePath: string = ".prettierrc.json";
-  toolId: string = "prettier";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
     return Buffer.from(JSON.stringify({}, null, 2));
