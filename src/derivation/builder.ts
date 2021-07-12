@@ -3,7 +3,7 @@ import * as Path from "path";
 
 import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
-import { File } from "@project/io";
+
 /**
  * Builds derivation files.
  */
@@ -19,31 +19,17 @@ export class DerivationBuilder {
    */
   public async makeDerivations(derivations: Derivation[]): Promise<void> {
     for (const derivation of derivations) {
-      // resolve file paths for the original file in the store and the symlink
-      const storePath: string = await this.project.resolver.resolve({
-        type: "file",
-        relPath: Path.join(
-          ".batterypack",
-          derivation.toolId,
-          derivation.filePath
-        ),
-      });
-      const linkPath: string = await this.project.resolver.resolve({
-        type: "file",
-        relPath: derivation.filePath,
+      // resolve the parent directory's path - creates the dir tree if any part doesn't exist
+      const parentDirPath: string = await this.project.resolver.resolve({
+        type: "directory",
+        relPath: Path.dirname(derivation.filePath),
       });
 
       // write file to derivation store
       await FS.promises.writeFile(
-        storePath,
+        Path.join(parentDirPath, Path.basename(derivation.filePath)),
         await derivation.makeDerivation(this.project)
       );
-
-      // link to file in derivation store
-      if (await new File(linkPath).doesExist()) {
-        await FS.promises.unlink(linkPath);
-      }
-      await FS.promises.symlink(storePath, linkPath);
     }
   }
 }

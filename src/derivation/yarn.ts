@@ -16,7 +16,6 @@ const YARN_RELEASE_DEFAULT: string = "yarn-berry.cjs";
  */
 export class YarnDerivation implements Derivation {
   filePath = ".yarnrc.yml";
-  toolId = "yarn";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
     // read the existing .yarnrc file

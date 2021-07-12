@@ -11,7 +11,6 @@ import { Project } from "@project/project";
  */
 export class TypeScriptDerivation implements Derivation {
   filePath = "tsconfig.json";
-  toolId = "typescript";
 
   public async makeDerivation(project: Project): Promise<Buffer> {
     const contents = {
