@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2021-07-11
 
+### Added
+
+- Opt-in feature flag to require use of the `override` keyword when overriding a parent class' property.
+  This option will be enabled by default in version 0.5.9.
+
 ### Changed
 
 - Generated configuration files are now created directly at the source instead of in `.batterypack`.

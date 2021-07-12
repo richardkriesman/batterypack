@@ -37,6 +37,8 @@ export class Compiler {
         module: "commonjs",
         moduleResolution: "node",
         noImplicitAny: true,
+        noImplicitOverride:
+          this.project.config.build?.features?.requireExplicitOverride ?? false,
         noImplicitReturns: true,
         noImplicitThis: true,
         outDir: await this.project.resolver.resolve(ProjectPaths.dirs.build),

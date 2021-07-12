@@ -24,6 +24,21 @@
       "title": "Build options",
       "type": "object",
       "properties": {
+        "features": {
+          "$id": "#/properties/build/properties/features",
+          "title": "Opt-in language features",
+          "description": "This section allows for gradual adoption of new but breaking language features. Over time, some feature flags will be phased out under the deprecation policy and become enabled by default.",
+          "type": "object",
+          "properties": {
+            "requireExplicitOverride": {
+              "$id": "#/properties/build/properties/features/properties/requireExplicitOverride",
+              "title": "Require overridden properties to be explicitly marked",
+              "description": "Whether to require the `override` keyword when a child class overrides a parent property.",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
         "target": {
           "$id": "#/properties/build/properties/target",
           "title": "Build target",

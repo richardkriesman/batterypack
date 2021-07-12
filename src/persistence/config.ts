@@ -42,6 +42,25 @@ export interface Config {
    */
   build?: {
     /**
+     * Opt-in language features.
+     *
+     * This section allows for gradual adoption of new but breaking
+     * language features. Over time, some feature flags will be phased
+     * out under the deprecation policy and become enabled by default.
+     */
+    features?: {
+      /**
+       * Whether to require the `override` keyword when a child class
+       * overrides a parent property.
+       *
+       * This feature will be enabled by default in version 0.5.0.
+       *
+       * @default false
+       */
+      requireExplicitOverride?: boolean;
+    };
+
+    /**
      * Target version of the ECMAScript standard to build for.
      */
     target?:
@@ -55,6 +74,11 @@ export interface Config {
   };
 
   /**
+   * Docker ignore rules
+   */
+  dockerignore?: string[];
+
+  /**
    * Program entrypoint for both the source and compiled code relative to the
    * base directory.
    */
@@ -62,11 +86,6 @@ export interface Config {
     build: string;
     source: string;
   };
-
-  /**
-   * Docker ignore rules
-   */
-  dockerignore?: string[];
 
   /**
    * Git ignore rules
