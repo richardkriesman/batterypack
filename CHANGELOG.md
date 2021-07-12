@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Opt-in feature flag to require use of the `override` keyword when overriding a parent class' property.
-  This option will be enabled by default in version 0.5.9.
+  This option will be enabled by default in version 0.5.0.
 
 ### Changed
 
