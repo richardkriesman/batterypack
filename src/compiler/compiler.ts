@@ -61,7 +61,7 @@ export class Compiler {
         target: this.project.config.build?.target ?? DEFAULT_TARGET,
         ...when(
           this.project.config.overrides,
-          (target) => target.typescript ?? {}
+          (target) => target["tsconfig.json"] ?? {}
         ),
       },
       include: [await this.project.resolver.resolve(ProjectPaths.dirs.source)],

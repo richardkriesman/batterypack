@@ -7,6 +7,20 @@ import { YamlEntity, YamlModel } from "@project/yaml";
  */
 export interface Config extends YamlEntity {
   /**
+   * Project author information
+   */
+  author?: {
+    /**
+     * Author name
+     */
+    name: string;
+    /**
+     * Author email address
+     */
+    email: string;
+  };
+
+  /**
    * Batterypack options
    */
   batterypack: {
@@ -15,6 +29,7 @@ export interface Config extends YamlEntity {
      */
     version: string;
   };
+
   /**
    * Build options
    */
@@ -31,9 +46,7 @@ export interface Config extends YamlEntity {
        * Whether to require the `override` keyword when a child class
        * overrides a parent property.
        *
-       * This feature will be enabled by default in version 0.5.0.
-       *
-       * @default false
+       * @default true
        */
       requireExplicitOverride?: boolean;
     };
@@ -49,8 +62,30 @@ export interface Config extends YamlEntity {
       | "ES2019"
       | "ES2020"
       | "ES2021"
+      | "ES2022"
       | "ESNext";
   };
+
+  /**
+   * Package dependencies
+   */
+  dependencies?: {
+    [name: string]: {
+      /**
+       * Dependency version expression
+       */
+      version: string;
+      /**
+       * Dependency relationship type
+       */
+      type?: "development" | "private" | "shared" | "sharedOptional";
+    };
+  };
+
+  /**
+   * Project description
+   */
+  description?: string;
 
   /**
    * Docker ignore rules
@@ -72,6 +107,13 @@ export interface Config extends YamlEntity {
   gitignore?: string[];
 
   /**
+   * Project license
+   *
+   * @default "UNLICENSED"
+   */
+  license?: string;
+
+  /**
    * Name of the project.
    */
   name: string;
@@ -81,15 +123,21 @@ export interface Config extends YamlEntity {
    */
   overrides: {
     /**
-     * Jest configuration option overrides.
+     * Jest configuration overrides.
      */
-    jest?: {
+    "jest.config.js": {
+      [key: string]: unknown;
+    };
+    /**
+     * NPM package configuration overrides.
+     */
+    "package.json": {
       [key: string]: unknown;
     };
     /**
      * TypeScript compiler option overrides.
      */
-    typescript?: {
+    "tsconfig.json": {
       [key: string]: unknown;
     };
   };
@@ -154,6 +202,13 @@ export interface Config extends YamlEntity {
       ignore?: string[];
     };
   };
+
+  /**
+   * Project version number
+   *
+   * @default "1.0.0"
+   */
+  version?: string;
 }
 
 export const ConfigFile = new YamlModel<Config>(CONFIG_SCHEMA);

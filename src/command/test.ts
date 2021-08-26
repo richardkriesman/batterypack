@@ -55,7 +55,7 @@ export const TestAction: Action<{}> = {
         _: cliArgs,
         $0: "batterypack",
         passWithNoTests: true,
-        ...(project.config.overrides?.jest ?? {}),
+        ...((project.config.overrides ?? {})["jest.config.js"] ?? {}),
         ...cliOptions,
       },
       roots

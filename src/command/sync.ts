@@ -7,6 +7,7 @@ import {
   DockerIgnoreDerivation,
   GitIgnoreDerivation,
   JestDerivation,
+  PackageDerivation,
   PrettierDerivation,
   TypeScriptDerivation,
   YarnDerivation,
@@ -15,8 +16,9 @@ import {
 import { ProjectPaths } from "@project/paths";
 import { Action } from "@project/ui";
 
-// build list of derivations
+// build a list of derivations
 const DERIVATIONS: Derivation[] = [
+  new PackageDerivation(),
   new JestDerivation(),
   new PrettierDerivation(),
   new TypeScriptDerivation(),
@@ -34,7 +36,7 @@ export const SyncAction: Action<{}> = {
   description: "sync project configuration files",
   flags: {},
   run: async (project): Promise<void> => {
-    // build task list
+    // build the task list
     const tasks: ListrTask[] = [];
     for await (const subproject of project.walk()) {
       tasks.push({
@@ -61,7 +63,7 @@ export const SyncAction: Action<{}> = {
       });
     }
 
-    // run task list
+    // run the task list
     await new Listr(tasks, {
       concurrent: true,
     }).run();

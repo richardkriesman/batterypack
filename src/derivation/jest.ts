@@ -40,6 +40,6 @@ async function generateJestConfig(project: Project) {
           },
         }
       : undefined,
-    ...(project.config?.overrides?.jest ?? {}),
+    ...((project.config?.overrides ?? {})["jest.config.js"] ?? {}),
   };
 }
