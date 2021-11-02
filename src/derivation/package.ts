@@ -3,16 +3,21 @@ import { Project } from "@project/project";
 import { ProjectPaths } from "@project/paths";
 import { when } from "@project/when";
 import { META } from "@project/meta";
+import {
+  DependencyRelationship,
+  DependencyRelationshipObject,
+} from "@project/persistence";
 
 /**
  * Dependencies to always add to package.json in the format of batterypack.yml
  * dependency declarations.
  */
-const DEFAULT_DEPENDENCIES = {
+const DEFAULT_DEPENDENCIES: { [name: string]: DependencyRelationship } = {
   // add batterypack as a dev dependency :>
   batterypack: {
     version: META.version,
     type: "development",
+    optional: false,
   },
 };
 
@@ -29,18 +34,36 @@ export class PackageDerivation implements Derivation {
       ...(project.config.dependencies ?? {}),
       ...DEFAULT_DEPENDENCIES,
     })) {
+      // create an object for props if the shorthand version string was used
+      const propsObj: DependencyRelationshipObject =
+        typeof props === "string"
+          ? {
+              version: props,
+              type: "private",
+              optional: false,
+            }
+          : props;
+
       // determine key in package.json
       let key: string;
-      switch (props.type) {
+      switch (propsObj.type) {
         case "development":
           key = "devDependencies";
           break;
-        case "shared":
-        case "sharedOptional":
+        case "peer":
           key = "peerDependencies";
           break;
+        case "private":
+          if (propsObj.optional) {
+            key = "optionalDependencies";
+          } else {
+            key = "dependencies";
+          }
+          break;
         default:
-          key = "dependencies";
+          throw new TypeError(
+            `Invalid dependency relationship type "${propsObj.type}".`
+          );
       }
 
       // create key if it doesn't exist yet
@@ -49,8 +72,10 @@ export class PackageDerivation implements Derivation {
       }
 
       // add dependency version expression
-      dependencyMixin[key][name] = props.version;
-      if (props.type === "sharedOptional") {
+      dependencyMixin[key][name] = propsObj.version;
+
+      // add optional flag for optional peer dependencies
+      if (propsObj.type === "peer" && propsObj.optional) {
         // make the peer dependency optional
         if (!dependencyMixin.hasOwnProperty("peerDependenciesMeta")) {
           dependencyMixin["peerDependenciesMeta"] = {};

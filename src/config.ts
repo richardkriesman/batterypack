@@ -1,11 +1,38 @@
 import { CONFIG_SCHEMA } from "@project/meta";
 import { YamlEntity, YamlModel } from "@project/yaml";
 
+export type DependencyRelationship = string | DependencyRelationshipObject;
+
+export interface DependencyRelationshipObject {
+  /**
+   * Dependency version expression
+   */
+  version: string;
+  /**
+   * Dependency relationship type
+   */
+  type?: "development" | "private" | "peer";
+  /**
+   * Optional relationship flag
+   */
+  optional?: boolean;
+}
+
 /**
  * Project persistence representation. batterypack uses this persistence to
  * build derivations for tool-specific configuration files.
  */
 export interface Config extends YamlEntity {
+  /**
+   * Batterypack options
+   */
+  batterypack: {
+    /**
+     * Required batterypack version.
+     */
+    version: string;
+  };
+
   /**
    * Project author information
    */
@@ -18,16 +45,6 @@ export interface Config extends YamlEntity {
      * Author email address
      */
     email: string;
-  };
-
-  /**
-   * Batterypack options
-   */
-  batterypack: {
-    /**
-     * Required batterypack version.
-     */
-    version: string;
   };
 
   /**
@@ -70,16 +87,7 @@ export interface Config extends YamlEntity {
    * Package dependencies
    */
   dependencies?: {
-    [name: string]: {
-      /**
-       * Dependency version expression
-       */
-      version: string;
-      /**
-       * Dependency relationship type
-       */
-      type?: "development" | "private" | "shared" | "sharedOptional";
-    };
+    [name: string]: DependencyRelationship;
   };
 
   /**

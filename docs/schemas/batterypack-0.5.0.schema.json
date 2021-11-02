@@ -6,18 +6,15 @@
   "required": ["batterypack", "name"],
   "properties": {
     "author": {
-      "$id": "#/properties/author",
       "title": "Project author information",
       "type": "object",
       "required": ["name", "email"],
       "properties": {
         "name": {
-          "$id": "#/properties/author/properties/name",
           "title": "Author name",
           "type": "string"
         },
         "email": {
-          "$id": "#/properties/author/properties/email",
           "title": "Author email address",
           "type": "string",
           "format": "email"
@@ -25,13 +22,11 @@
       }
     },
     "batterypack": {
-      "$id": "#/properties/batterypack",
       "title": "batterypack options",
       "type": "object",
       "required": ["version"],
       "properties": {
         "version": {
-          "$id": "#/properties/batterypack/properties/version",
           "title": "Required version",
           "description": "Version of batterypack required by this project",
           "type": "string"
@@ -39,18 +34,15 @@
       }
     },
     "build": {
-      "$id": "#/properties/build",
       "title": "Build options",
       "type": "object",
       "properties": {
         "features": {
-          "$id": "#/properties/build/properties/features",
           "title": "Opt-in language features",
           "description": "This section allows for gradual adoption of new but breaking language features. Over time, some feature flags will be phased out under the deprecation policy and become enabled by default.",
           "type": "object",
           "properties": {
             "requireExplicitOverride": {
-              "$id": "#/properties/build/properties/features/properties/requireExplicitOverride",
               "title": "Require overridden properties to be explicitly marked",
               "description": "Whether to require the `override` keyword when a child class overrides a parent property.",
               "type": "boolean",
@@ -59,7 +51,6 @@
           }
         },
         "target": {
-          "$id": "#/properties/build/properties/target",
           "title": "Build target",
           "description": "Target version of the ECMAScript standard version to build for.",
           "type": "string",
@@ -70,49 +61,58 @@
             "ES2018",
             "ES2019",
             "ES2020",
+            "ES2021",
             "ESNext"
           ]
         }
       }
     },
     "dependencies": {
-      "$id": "#/properties/dependencies",
       "title": "Package dependencies",
       "type": "object",
       "additionalProperties": {
-        "$id": "#/properties/dependencies/additionalProperties",
-        "type": "object",
-        "required": ["version"],
-        "properties": {
-          "version": {
-            "$id": "#/properties/dependencies/additionalProperties/properties/version",
+        "anyOf": [
+          {
+            "type": "object",
+            "required": ["version"],
+            "properties": {
+              "version": {
+                "title": "Dependency version expression",
+                "type": "string",
+                "description": "Package version to match in as an NPM version expression."
+              },
+              "type": {
+                "title": "Dependency relationship type",
+                "type": "string",
+                "description": "Relationship of the dependency to the project.",
+                "enum": ["development", "private", "peer"],
+                "default": "private"
+              },
+              "optional": {
+                "title": "Optional relationship flag",
+                "type": "boolean",
+                "description": "Whether the dependency is optional.",
+                "default": false
+              }
+            }
+          },
+          {
             "title": "Dependency version expression",
             "type": "string",
-            "description": "Package version to match in as NPM version expression"
-          },
-          "type": {
-            "$id": "#/properties/dependencies/additionalProperties/properties/type",
-            "title": "Dependency relationship type",
-            "type": "string",
-            "description": "Relationship of the dependency to the project",
-            "enum": ["development", "private", "shared", "sharedOptional"],
-            "default": "private"
+            "description": "Package version to match in as an NPM version expression."
           }
-        }
+        ]
       }
     },
     "description": {
-      "$id": "#/properties/description",
       "title": "Project description",
       "type": "string"
     },
     "dockerignore": {
-      "$id": "#/properties/dockerignore",
       "title": "Additional dockerignore rules",
       "type": "array",
       "examples": [["/build"]],
       "items": {
-        "$id": "#/properties/dockerignore/items",
         "type": "string",
         "examples": ["/build"]
       },
@@ -120,7 +120,6 @@
       "additionalItems": true
     },
     "entrypoint": {
-      "$id": "#/properties/entrypoint",
       "title": "Program entrypoint",
       "description": "Program entrypoint for compiled and source code relative to the project root.",
       "type": "object",
@@ -133,13 +132,11 @@
       "required": ["build", "source"],
       "properties": {
         "build": {
-          "$id": "#/properties/entrypoint/properties/build",
           "title": "Build entrypoint",
           "type": "string",
           "examples": ["build/index.js"]
         },
         "source": {
-          "$id": "#/properties/entrypoint/properties/source",
           "title": "Source entrypoint",
           "type": "string",
           "examples": ["src/index.tsx"]
@@ -147,12 +144,10 @@
       }
     },
     "gitignore": {
-      "$id": "#/properties/gitignore",
       "title": "Additional gitignore rules",
       "type": "array",
       "examples": [["/build"]],
       "items": {
-        "$id": "#/properties/gitignore/items",
         "type": "string",
         "examples": ["/build"]
       },
@@ -160,33 +155,28 @@
       "additionalItems": true
     },
     "license": {
-      "$id": "#/properties/license",
       "title": "Project license",
       "type": "string",
       "description": "Software Package Data Exchange (SPDX) license expression",
       "default": "UNLICENSED"
     },
     "name": {
-      "$id": "#/properties/name",
       "title": "Project name",
       "type": "string",
       "examples": ["my-program"]
     },
     "overrides": {
-      "$id": "#/properties/overrides",
       "title": "Configuration overrides",
       "description": "Override component configuration options. This may break your toolchain!",
       "type": "object",
       "properties": {
         "package.json": {
-          "$id": "#/properties/overrides/properties/package",
           "title": "package.json overrides",
           "description": "NPM package configuration overrides.",
           "type": "object",
           "additionalProperties": true
         },
         "tsconfig.json": {
-          "$id": "#/properties/overrides/properties/tsconfig",
           "title": "Typescript overrides",
           "description": "TypeScript compiler option overrides.",
           "type": "object",
@@ -195,7 +185,6 @@
       }
     },
     "scopes": {
-      "$id": "#/properties/scopes",
       "title": "Scoped registries",
       "description": "Define specific registries to use for package scopes.",
       "type": "object",
@@ -208,7 +197,6 @@
         }
       ],
       "additionalProperties": {
-        "$id": "#/properties/scopes/additionalProperties",
         "type": "object",
         "examples": [
           {
@@ -219,13 +207,11 @@
         "required": ["origin"],
         "properties": {
           "origin": {
-            "$id": "#/properties/scopes/additionalProperties/properties/origin",
             "type": "string",
             "title": "Registry server origin",
             "examples": ["https://registry.example.com"]
           },
           "credential": {
-            "$id": "#/properties/scopes/additionalProperties/properties/credential",
             "type": "string",
             "title": "Credential name",
             "description": "The name of the credential stored in .batterypack/credentials.yml",
@@ -236,69 +222,57 @@
       }
     },
     "subprojects": {
-      "$id": "#/properties/subprojects",
       "title": "Subprojects",
       "type": "array",
       "description": "List of paths to batterypack projects that need to be built before this project.",
       "items": {
-        "$id": "#/properties/subprojects/items",
         "type": "string",
         "examples": ["subproject-a"]
       }
     },
     "unitTest": {
-      "$id": "#/properties/unitTest",
       "title": "Unit tests",
       "description": "Run unit tests in your projects.",
       "type": "object",
       "properties": {
         "coverage": {
-          "$id": "#/properties/unitTest/properties/coverage",
           "title": "Code coverage",
           "description": "Analyze test coverage and enforce minimum coverage requirements.",
           "type": "object",
           "properties": {
             "enabled": {
-              "$id": "#/properties/unitTest/properties/coverage/properties/enabled",
               "title": "Enable code coverage",
               "description": "Whether code coverage checks are enabled. This may cause a performance impact on your tests.",
               "type": "boolean"
             },
             "rules": {
-              "$id": "#/properties/unitTest/properties/coverage/properties/rules",
               "title": "Code coverage rules",
               "description": "Rules which must be met for code coverage checks to pass.",
               "type": "object",
               "properties": {
                 "minBranchCoverage": {
-                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minBranchCoverage",
                   "title": "Minimum branch coverage (percent)",
                   "type": "integer"
                 },
                 "minFunctionCoverage": {
-                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minFunctionCoverage",
                   "title": "Minimum function coverage (percent)",
                   "type": "integer"
                 },
                 "minLineCoverage": {
-                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minLineCoverage",
                   "title": "Minimum line coverage (percent)",
                   "type": "integer"
                 },
                 "minStatementCoverage": {
-                  "$id": "#/properties/unitTest/properties/coverage/properties/rules/properties/minStatementCoverage",
                   "title": "Minimum statement coverage (percent)",
                   "type": "integer"
                 }
               }
             },
             "ignore": {
-              "$id": "#/properties/unitTest/properties/coverage/properties/ignore",
               "title": "Ignored file patterns",
               "description": "Regular expressions which match file paths to ignore. These paths are relative to the project's source directory.",
               "type": "array",
               "items": {
-                "$id": "#/properties/unitTest/properties/coverage/properties/ignore/items",
                 "type": "string"
               }
             }
@@ -307,7 +281,6 @@
       }
     },
     "version": {
-      "$id": "#/properties/version",
       "title": "Project version number",
       "type": "string",
       "default": "1.0.0"
