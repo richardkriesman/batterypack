@@ -1,4 +1,5 @@
 import { Connection, createConnection } from "typeorm";
+import { Credential } from "@project/db/entities";
 
 export class Database {
   static async connect(fileName: string): Promise<Database> {
@@ -6,7 +7,7 @@ export class Database {
     db.#connection = await createConnection({
       type: "better-sqlite3",
       database: fileName,
-      entities: [],
+      entities: [Credential],
       subscribers: [],
       migrations: [],
       synchronize: true, // TODO: Remember to turn this off!!!

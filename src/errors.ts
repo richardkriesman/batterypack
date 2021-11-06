@@ -13,10 +13,6 @@ export class BatterypackError extends Error {
   public constructor(message?: string, showMinimal: boolean = false) {
     super(message);
     this.showMinimal = showMinimal;
-    if (this.showMinimal) {
-      // remove the actual stack trace, leaving just the message
-      this.stack = message;
-    }
   }
 }
 

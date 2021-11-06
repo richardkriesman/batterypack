@@ -6,7 +6,7 @@ import { META } from "@project/meta";
 import {
   DependencyRelationship,
   DependencyRelationshipObject,
-} from "@project/persistence";
+} from "@project/config";
 
 /**
  * Dependencies to always add to package.json in the format of batterypack.yml
