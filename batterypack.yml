@@ -1,9 +1,6 @@
 batterypack:
   version: 0.4.2
 name: batterypack
-entrypoint:
-  source: src/cli/batterypack.ts
-  build: build/cli/batterypack.js
 build:
   features:
     requireExplicitOverride: true

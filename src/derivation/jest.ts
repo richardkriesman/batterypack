@@ -1,4 +1,4 @@
-import { Derivation } from "@project/derivation";
+import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
 import { ProjectPaths } from "@project/paths";
 

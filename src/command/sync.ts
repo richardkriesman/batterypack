@@ -1,6 +1,7 @@
-import "source-map-support/register";
+import FS from "fs";
+import { Listr, ListrTask } from "listr2";
+import Path from "path";
 
-import { asSubcommandTaskTree, Task } from "@project/ui";
 import {
   Derivation,
   DockerIgnoreDerivation,
@@ -12,37 +13,38 @@ import {
   YarnDummyCompatDerivation,
 } from "@project/derivation";
 import { ProjectPaths } from "@project/paths";
-import Path from "path";
-import FS from "fs";
+import { Action } from "@project/ui";
 
-asSubcommandTaskTree({
-  filename: __filename,
-  ctx: {},
-  tasks: async (project) => {
-    // build list of derivations
-    const derivations: Derivation[] = [
-      new JestDerivation(),
-      new PrettierDerivation(),
-      new TypeScriptDerivation(),
-      new YarnDerivation(),
-      new YarnDummyCompatDerivation(),
-    ];
-    derivations.push(
-      new DockerIgnoreDerivation(derivations),
-      new GitIgnoreDerivation(derivations)
-    );
+// build list of derivations
+const DERIVATIONS: Derivation[] = [
+  new JestDerivation(),
+  new PrettierDerivation(),
+  new TypeScriptDerivation(),
+  new YarnDerivation(),
+  new YarnDummyCompatDerivation(),
+];
+DERIVATIONS.push(
+  new DockerIgnoreDerivation(DERIVATIONS),
+  new GitIgnoreDerivation(DERIVATIONS)
+);
 
-    // build derivations for each subproject
-    const projectTasks: Task[] = [];
+export const SyncAction: Action<{}> = {
+  type: "action",
+  name: "sync",
+  description: "sync project configuration files",
+  flags: {},
+  run: async (project): Promise<void> => {
+    // build task list
+    const tasks: ListrTask[] = [];
     for await (const subproject of project.walk()) {
-      projectTasks.push({
-        description: await subproject.resolver.resolve(ProjectPaths.root),
-        fn: async () => {
+      tasks.push({
+        title: await subproject.resolver.resolve(ProjectPaths.root),
+        task: async () => {
           // flush persistence files
           await subproject.flush();
 
           // make derivations
-          for (const derivation of derivations) {
+          for (const derivation of DERIVATIONS) {
             // resolve the parent directory's path - creates the dir tree if any part doesn't exist
             const parentDirPath: string = await subproject.resolver.resolve({
               type: "directory",
@@ -58,6 +60,10 @@ asSubcommandTaskTree({
         },
       });
     }
-    return projectTasks;
+
+    // run task list
+    await new Listr(tasks, {
+      concurrent: true,
+    }).run();
   },
-});
+};

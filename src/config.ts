@@ -1,5 +1,5 @@
-import { YamlEntity, YamlModel } from "@project/yaml";
 import { CONFIG_SCHEMA } from "@project/meta";
+import { YamlEntity, YamlModel } from "@project/yaml";
 
 /**
  * Project persistence representation. batterypack uses this persistence to

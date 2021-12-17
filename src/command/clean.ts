@@ -1,20 +1,23 @@
-import "source-map-support/register";
 import * as FS from "fs";
+import { Listr, ListrTask } from "listr2";
 import * as Path from "path";
 
-import { asSubcommandTaskTree, Task } from "@project/ui";
 import { ProjectPaths } from "@project/paths";
 import { Project } from "@project/project";
+import { Action } from "@project/ui";
 
-asSubcommandTaskTree({
-  filename: __filename,
-  ctx: {},
-  tasks: async (project: Project) => {
-    const projectTasks: Task[] = [];
+export const CleanAction: Action<{}> = {
+  type: "action",
+  name: "clean",
+  description: "delete build artifacts",
+  flags: {},
+  run: async (project: Project): Promise<void> => {
+    // build task list
+    const tasks: ListrTask[] = [];
     for await (const subproject of project.walk()) {
-      projectTasks.push({
-        description: await subproject.resolver.resolve(ProjectPaths.root),
-        fn: async () => {
+      tasks.push({
+        title: await subproject.resolver.resolve(ProjectPaths.root),
+        task: async () => {
           // resolve paths
           const tsBuildInfoPath = Path.join(
             await subproject.resolver.resolve(ProjectPaths.dirs.derivations),
@@ -32,7 +35,7 @@ asSubcommandTaskTree({
 
           // delete build artifacts
           try {
-            await FS.promises.rmdir(sourcePath, {
+            await FS.promises.rm(sourcePath, {
               recursive: true,
             });
             await FS.promises.rm(tsBuildInfoPath);
@@ -44,6 +47,10 @@ asSubcommandTaskTree({
         },
       });
     }
-    return projectTasks;
+
+    // run task list
+    await new Listr(tasks, {
+      concurrent: true,
+    }).run();
   },
-});
+};
