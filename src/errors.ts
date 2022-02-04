@@ -43,13 +43,13 @@ export class ConfigVersionMismatchError extends BatterypackError {
   public constructor(
     filePath: string,
     version: string,
-    showMiniMal: boolean = false
+    showMinimal: boolean = false
   ) {
     super(
       `This version of batterypack is not supported by the project whose ` +
         `configuration file is stored at ${filePath}. The version expected ` +
         `is ${version}.`,
-      showMiniMal
+      showMinimal
     );
   }
 }

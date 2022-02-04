@@ -3,7 +3,6 @@ import "source-map-support/register";
 import { asSubcommandTaskTree, Task } from "@project/ui";
 import {
   Derivation,
-  DerivationBuilder,
   DockerIgnoreDerivation,
   GitIgnoreDerivation,
   JestDerivation,
@@ -13,6 +12,8 @@ import {
   YarnDummyCompatDerivation,
 } from "@project/derivation";
 import { ProjectPaths } from "@project/paths";
+import Path from "path";
+import FS from "fs";
 
 asSubcommandTaskTree({
   filename: __filename,
@@ -41,7 +42,19 @@ asSubcommandTaskTree({
           await subproject.flush();
 
           // make derivations
-          await new DerivationBuilder(subproject).makeDerivations(derivations);
+          for (const derivation of derivations) {
+            // resolve the parent directory's path - creates the dir tree if any part doesn't exist
+            const parentDirPath: string = await subproject.resolver.resolve({
+              type: "directory",
+              relPath: Path.dirname(derivation.filePath),
+            });
+
+            // write file to derivation store
+            await FS.promises.writeFile(
+              Path.join(parentDirPath, Path.basename(derivation.filePath)),
+              await derivation.makeDerivation(subproject)
+            );
+          }
         },
       });
     }

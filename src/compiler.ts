@@ -2,10 +2,10 @@ import * as TypeScript from "typescript";
 import { default as createKeyTransformer } from "ts-transformer-keys/transformer";
 import { default as createPathTransformer } from "typescript-transform-paths";
 
+import { DEFAULT_TARGET } from "@project/meta";
 import { PathResolver, ProjectPaths } from "@project/paths";
 import { Project } from "@project/project";
-
-const DEFAULT_TARGET: string = "ES2020";
+import { when } from "@project/when";
 
 /**
  * Compiles a {@link PathResolver}'s source code, written in TypeScript, to
@@ -38,7 +38,7 @@ export class Compiler {
         moduleResolution: "node",
         noImplicitAny: true,
         noImplicitOverride:
-          this.project.config.build?.features?.requireExplicitOverride ?? false,
+          this.project.config.build?.features?.requireExplicitOverride ?? true,
         noImplicitReturns: true,
         noImplicitThis: true,
         outDir: await this.project.resolver.resolve(ProjectPaths.dirs.build),
@@ -54,7 +54,10 @@ export class Compiler {
         strictNullChecks: true,
         stripInternal: true,
         target: this.project.config.build?.target ?? DEFAULT_TARGET,
-        ...(this.project.config.overrides?.typescript ?? {}),
+        ...when(
+          this.project.config.overrides,
+          (target) => target.typescript ?? {}
+        ),
       },
       include: [await this.project.resolver.resolve(ProjectPaths.dirs.source)],
       exclude: ["node_modules"],

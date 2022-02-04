@@ -84,10 +84,10 @@ export class PathResolver {
     basePath = basePath || (await this.resolve());
     for await (const node of await FS.promises.opendir(basePath)) {
       const path: string = Path.join(basePath, node.name);
-      if (await node.isDirectory()) {
+      if (node.isDirectory()) {
         yield [path, true];
         yield* this.walk(path);
-      } else if (await node.isFile()) {
+      } else if (node.isFile()) {
         yield [path, false];
       }
     }

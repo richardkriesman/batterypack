@@ -1,7 +1,7 @@
 {
   "name": "batterypack",
   "description": "An opinionated, \"batteries included\" project management and build tool.",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "author": "Richard Kriesman <rkriesman@gmail.com>",
   "license": "MIT",
   "publishConfig": {
@@ -27,7 +27,7 @@
     "@types/listr": "^0.14.3",
     "@types/prettier": "^2.3.0",
     "@types/xxhashjs": "^0.2.2",
-    "batterypack": "0.3.0",
+    "batterypack": "0.4.2",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3"
   },

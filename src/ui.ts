@@ -137,7 +137,12 @@ export function asSubcommandTaskTree<C extends object = {}>(
       })
       .parseAsync()
       .catch((err) => {
-        console.error(`\n${err.stack}`);
+        if (err instanceof BatterypackError && err.showMinimal) {
+          // TODO: prettier error messages - use chalk?
+          console.error(err.message);
+        } else {
+          console.error(err);
+        }
         process.exit(1);
       })
       .finally(() => {
@@ -330,7 +335,12 @@ export function asSubcommand(
     })
     .parseAsync()
     .catch((err) => {
-      console.error(err);
+      if (err instanceof BatterypackError && err.showMinimal) {
+        // TODO: prettier error messages - use chalk?
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
       process.exit(1);
     });
 }

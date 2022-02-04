@@ -1,33 +1,11 @@
-import * as FS from "fs";
-import * as JsonSchema from "jsonschema";
-import * as Path from "path";
-
-import { PathResolver, ProjectPaths } from "@project/paths";
-import { LoadedStore, YamlStore } from "@project/persistence/store";
-import {
-  ConfigMissingError,
-  ConfigSchemaError,
-  ConfigVersionMismatchError,
-} from "@project/errors";
-import { META } from "@project/meta";
-
-/**
- * Path to the JSON schema file.
- */
-const SCHEMA_PATH: string = Path.join(
-  __dirname,
-  "..",
-  "..",
-  "docs",
-  "schemas",
-  "batterypack-0.4.0.schema.json"
-);
+import { YamlEntity, YamlModel } from "@project/yaml";
+import { CONFIG_SCHEMA } from "@project/meta";
 
 /**
  * Project persistence representation. batterypack uses this persistence to
  * build derivations for tool-specific configuration files.
  */
-export interface Config {
+export interface Config extends YamlEntity {
   /**
    * Batterypack options
    */
@@ -70,6 +48,7 @@ export interface Config {
       | "ES2018"
       | "ES2019"
       | "ES2020"
+      | "ES2021"
       | "ESNext";
   };
 
@@ -171,54 +150,4 @@ export interface Config {
   };
 }
 
-/**
- * Reads and writes the project {@link Config}.
- */
-export class ConfigFile extends YamlStore<Config> {
-  /**
-   * Opens a {@link ConfigFile}, creating the persistence file if it does not
-   * already exist.
-   */
-  public static async open(
-    resolver: PathResolver
-  ): Promise<LoadedStore<ConfigFile, Config>> {
-    // load config file
-    const configPath: string = await resolver.resolve(
-      ProjectPaths.files.config
-    );
-    let config: Config | undefined = await super.readData<Config>(configPath);
-    if (config === undefined) {
-      throw new ConfigMissingError(configPath);
-    }
-
-    // load schema file
-    const schema = JSON.parse(
-      (await FS.promises.readFile(SCHEMA_PATH)).toString("utf-8")
-    );
-
-    // validate config file schema
-    const validator = new JsonSchema.Validator();
-    try {
-      validator.validate(config, schema, {
-        throwError: true,
-      });
-    } catch (e) {
-      if (e instanceof JsonSchema.ValidationError) {
-        throw new ConfigSchemaError(configPath, e);
-      }
-    }
-
-    // verify version number matches
-    if (config.batterypack.version !== META.version) {
-      throw new ConfigVersionMismatchError(
-        configPath,
-        config.batterypack.version
-      );
-    }
-
-    // bind data to instance
-    return super.bindDynamicAccessors<ConfigFile, Config>(
-      new ConfigFile(config, configPath)
-    );
-  }
-}
+export const ConfigFile = new YamlModel<Config>(CONFIG_SCHEMA);

@@ -72,7 +72,14 @@ export class File implements FilesystemItem {
   /**
    * Reads the entire file, returning a Buffer containing its contents.
    */
-  public async readAll(): Promise<Buffer> {
-    return await FS.promises.readFile(this.path);
+  public readAll(): Promise<Buffer> {
+    return FS.promises.readFile(this.path);
+  }
+
+  /**
+   * Writes the entire file, replacing any data that already exists.
+   */
+  public writeAll(buf: Buffer): Promise<void> {
+    return FS.promises.writeFile(this.path, buf);
   }
 }

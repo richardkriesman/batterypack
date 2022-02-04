@@ -5,14 +5,15 @@ import * as XXH from "xxhashjs";
 
 import { PathResolver, ProjectPaths } from "@project/paths";
 import {
-  Config,
-  ConfigFile,
   Credentials,
   CredentialsFile,
   LoadedStore,
   Internal,
   InternalFile,
 } from "@project/persistence";
+import { Config, ConfigFile } from "@project/config";
+import { META } from "@project/meta";
+import { ConfigVersionMismatchError } from "@project/errors";
 
 /**
  * Manage a batterypack project.
@@ -20,22 +21,36 @@ import {
 export class Project {
   public static async open(path: string): Promise<Project> {
     const resolver = new PathResolver(path);
+
+    // load config file and ensure version number matches
+    const configPath: string = await resolver.resolve(
+      ProjectPaths.files.config
+    );
+    const config: Config = await ConfigFile.open(configPath);
+    if (config.batterypack.version !== META.version) {
+      throw new ConfigVersionMismatchError(
+        configPath,
+        config.batterypack.version,
+        true
+      );
+    }
+
     return new Project(
       resolver,
-      await ConfigFile.open(resolver),
+      config,
       await CredentialsFile.open(resolver),
       await InternalFile.open(resolver)
     );
   }
 
-  public readonly config: LoadedStore<ConfigFile, Config>;
+  public readonly config: Config;
   public readonly credentials: LoadedStore<CredentialsFile, Credentials>;
   public readonly internal: LoadedStore<InternalFile, Internal>;
   public readonly resolver: PathResolver;
 
   private constructor(
     resolver: PathResolver,
-    config: LoadedStore<ConfigFile, Config>,
+    config: Config,
     credentials: LoadedStore<CredentialsFile, Credentials>,
     internal: LoadedStore<InternalFile, Internal>
   ) {

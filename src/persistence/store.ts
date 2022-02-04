@@ -63,6 +63,8 @@ abstract class Store<T extends object> {
  * A store that supports reading and writing to a YAML file.
  *
  * @typeVar T - Object schema type
+ *
+ * @deprecated Use {@link YamlModel} instead.
  */
 export abstract class YamlStore<T extends object> extends Store<T> {
   /**

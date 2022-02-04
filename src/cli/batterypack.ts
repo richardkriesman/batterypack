@@ -3,6 +3,7 @@ import "source-map-support/register";
 import * as Commander from "commander";
 
 import { META } from "@project/meta";
+import { BatterypackError } from "@project/errors";
 
 // register subcommands
 Commander.program
