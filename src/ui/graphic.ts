@@ -9,10 +9,26 @@ export function table(options: {
   headers: string[];
   data: string[][];
 }): string {
+  // determine width of the longest cell for each column
+  const colWidths: number[] = [];
+  for (const col of options.headers) {
+    colWidths.push(0);
+  }
+  for (const row of [options.headers].concat(options.data)) {
+    for (let i = 0; i < row.length; i++) {
+      if (row[i].length > colWidths[i]) {
+        colWidths[i] = row[i].length + 2; // +2 for padding on edges
+      }
+    }
+  }
+
+  // build table
   const table = new Table({
     head: options.headers,
+    colWidths: colWidths,
   });
   table.push(...options.data);
+
   return table.toString();
 }
 

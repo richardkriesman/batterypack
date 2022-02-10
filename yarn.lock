@@ -1447,7 +1447,7 @@ __metadata:
     typescript-transform-paths: ^2.2.4
     xxhashjs: ^0.2.2
   bin:
-    batterypack: build/cli/batterypack.js
+    batterypack: build/index.js
   languageName: unknown
   linkType: soft
 

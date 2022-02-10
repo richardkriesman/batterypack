@@ -85,7 +85,7 @@
                 "title": "Dependency relationship type",
                 "type": "string",
                 "description": "Relationship of the dependency to the project.",
-                "enum": ["development", "private", "peer"],
+                "enum": ["development", "production", "peer"],
                 "default": "private"
               },
               "optional": {

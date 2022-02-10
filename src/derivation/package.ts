@@ -39,7 +39,7 @@ export class PackageDerivation implements Derivation {
         typeof props === "string"
           ? {
               version: props,
-              type: "private",
+              type: "production",
               optional: false,
             }
           : props;
@@ -53,7 +53,7 @@ export class PackageDerivation implements Derivation {
         case "peer":
           key = "peerDependencies";
           break;
-        case "private":
+        case "production":
           if (propsObj.optional) {
             key = "optionalDependencies";
           } else {
@@ -105,10 +105,7 @@ export class PackageDerivation implements Derivation {
         },
       })),
       ...dependencyMixin,
-      ...when(
-        project.config.overrides,
-        (target) => target["package.json"] ?? {}
-      ),
+      ...when(project.config.overrides?.["package.json"], (target) => target),
     };
 
     // encode as json

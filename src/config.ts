@@ -11,7 +11,7 @@ export interface DependencyRelationshipObject {
   /**
    * Dependency relationship type
    */
-  type?: "development" | "private" | "peer";
+  type?: "development" | "production" | "peer";
   /**
    * Optional relationship flag
    */
