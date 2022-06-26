@@ -1,12 +1,12 @@
 import { Listr, ListrTask } from "listr2";
 import * as Path from "path";
 
+import { Action } from "@project/ui";
 import { Compiler } from "@project/compiler";
 import { Formatter } from "@project/formatter";
 import { Inspector } from "@project/inspector";
 import { File } from "@project/io";
 import { ProjectPaths } from "@project/paths";
-import { Action } from "@project/ui";
 
 export const BuildAction: Action<{
   assertFormat: boolean;

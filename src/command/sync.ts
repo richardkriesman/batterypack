@@ -18,8 +18,8 @@ import { Action } from "@project/ui";
 
 // build a list of derivations
 const DERIVATIONS: Derivation[] = [
-  new PackageDerivation(),
   new JestDerivation(),
+  new PackageDerivation(),
   new PrettierDerivation(),
   new TypeScriptDerivation(),
   new YarnDerivation(),

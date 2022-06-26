@@ -79,14 +79,14 @@
               "version": {
                 "title": "Dependency version expression",
                 "type": "string",
-                "description": "Package version to match in as an NPM version expression."
+                "description": "Package version to match as an NPM version expression."
               },
               "type": {
                 "title": "Dependency relationship type",
                 "type": "string",
                 "description": "Relationship of the dependency to the project.",
                 "enum": ["development", "production", "peer"],
-                "default": "private"
+                "default": "production"
               },
               "optional": {
                 "title": "Optional relationship flag",
