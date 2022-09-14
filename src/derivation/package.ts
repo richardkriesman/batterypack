@@ -2,7 +2,6 @@ import { Derivation } from "@project/derivation/abstract";
 import { Project } from "@project/project";
 import { ProjectPaths } from "@project/paths";
 import { when } from "@project/when";
-import { META } from "@project/meta";
 import {
   DependencyRelationship,
   DependencyRelationshipObject,
@@ -12,14 +11,7 @@ import {
  * Dependencies to always add to package.json in the format of batterypack.yml
  * dependency declarations.
  */
-const DEFAULT_DEPENDENCIES: { [name: string]: DependencyRelationship } = {
-  // add batterypack as a dev dependency :>
-  batterypack: {
-    version: META.version,
-    type: "development",
-    optional: false,
-  },
-};
+const DEFAULT_DEPENDENCIES: { [name: string]: DependencyRelationship } = {};
 
 /**
  * Derives package.json.
