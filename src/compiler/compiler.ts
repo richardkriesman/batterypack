@@ -6,8 +6,8 @@ import { WorkerData, WorkerMessage } from "@project/compiler/types";
 import { PathResolver, ProjectPaths } from "@project/paths";
 import { Project } from "@project/project";
 import { when } from "@project/when";
+import { DEFAULT_TARGET } from "@project/meta";
 
-const DEFAULT_TARGET: string = "ES2020";
 const WORKER_FILE_PATH: string = Path.join(__dirname, "worker.js");
 
 /**
@@ -36,12 +36,14 @@ export class Compiler {
         esModuleInterop: true,
         emitDecoratorMetadata: true,
         experimentalDecorators: true,
+        inlineSourceMap: true, // inline sources are needed to fix jest error line numbers
+        inlineSources: true,
         lib: [this.project.config.build?.target ?? DEFAULT_TARGET],
         module: "commonjs",
         moduleResolution: "node",
         noImplicitAny: true,
         noImplicitOverride:
-          this.project.config.build?.features?.requireExplicitOverride ?? true,
+          this.project.config.build?.features?.requireExplicitOverride ?? false,
         noImplicitReturns: true,
         noImplicitThis: true,
         outDir: await this.project.resolver.resolve(ProjectPaths.dirs.build),
@@ -50,7 +52,7 @@ export class Compiler {
         },
         preserveConstEnums: true,
         rootDir: await this.project.resolver.resolve(ProjectPaths.dirs.source),
-        sourceMap: true,
+        sourceMap: false, // disabled because sources are generated inline
         skipLibCheck: true,
         strictBindCallApply: true,
         strictFunctionTypes: true,

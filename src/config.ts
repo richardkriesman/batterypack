@@ -81,10 +81,16 @@ export interface Config extends YamlEntity {
    */
   overrides: {
     /**
+     * Jest configuration option overrides.
+     */
+    jest?: {
+      [key: string]: unknown;
+    };
+    /**
      * TypeScript compiler option overrides.
      */
-    typescript: {
-      [key: string]: string;
+    typescript?: {
+      [key: string]: unknown;
     };
   };
 

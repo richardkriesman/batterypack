@@ -107,8 +107,13 @@
       "description": "Override component configuration options. This may break your toolchain!",
       "type": "object",
       "properties": {
+        "jest": {
+          "title": "Jest overrides",
+          "description": "Jest configuration option overrides.",
+          "type": "object",
+          "additionalProperties": true
+        },
         "typescript": {
-          "$id": "#/properties/overrides/properties/typescript",
           "title": "Typescript overrides",
           "description": "TypeScript compiler option overrides.",
           "type": "object",

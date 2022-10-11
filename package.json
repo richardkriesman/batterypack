@@ -22,41 +22,31 @@
     "README.md"
   ],
   "devDependencies": {
-    "@types/cli-table": "^0.3.0",
-    "@types/jest": "^26.0.23",
-    "@types/js-yaml": "^4.0.1",
-    "@types/prettier": "^2.3.0",
+    "@types/cli-table": "^0.3.1",
+    "@types/jest": "^27.5.2",
+    "@types/js-yaml": "^4.0.5",
+    "@types/prettier": "^2.7.1",
     "@types/xxhashjs": "^0.2.2",
-    "batterypack": "0.4.2",
-    "husky": "^4.3.8",
-    "lint-staged": "^10.5.3"
+    "batterypack": "0.4.2"
   },
   "dependencies": {
     "@types/node": "^14.0.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
-    "aws-sdk": "^2.936.0",
-    "chalk": "^4.1.1",
-    "cli-table": "^0.3.6",
-    "commander": "^8.0.0",
-    "jest": "^26.6.3",
+    "aws-sdk": "^2.1231.0",
+    "chalk": "^4.1.2",
+    "cli-table": "^0.3.11",
+    "commander": "^8.3.0",
+    "jest": "^27.5.1",
     "js-yaml": "^4.1.0",
-    "jsonschema": "^1.4.0",
+    "jsonschema": "^1.4.1",
     "listr2": "^4.0.5",
     "madge": "^5.0.1",
-    "prettier": "^2.7.1",
+    "prettier": "2.7.1",
     "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.19",
+    "source-map-support": "^0.5.21",
     "ts-transformer-keys": "^0.4.3",
-    "typescript": "^4.3.4",
+    "typescript": "4.8.4",
     "typescript-transform-paths": "^2.2.4",
     "xxhashjs": "^0.2.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
   }
 }

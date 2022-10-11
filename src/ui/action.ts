@@ -22,6 +22,10 @@ export type Action<F extends FlagParams> = {
    */
   description: string;
   /**
+   * Override the usage string, which appears on the help page.
+   */
+  usage?: string;
+  /**
    * Optional flags to accept. The full name of each flag is available in the
    * CLI using the `--` flag prefix. The name is automatically converted to
    * `kebab-case` in the CLI, but is available in its unmodified form within an
@@ -29,11 +33,18 @@ export type Action<F extends FlagParams> = {
    */
   flags: FlagMap<F>;
   /**
+   * Whether the action parses flags manually. This does not prevent
+   * {@link flags} from being used, but it does require that any flags
+   * handled by {@link flags} are passed before arguments.
+   */
+  manualFlagParsing?: boolean;
+  /**
    * Action runner function.
    */
   run(
     project: Project,
-    flags: Partial<F>
+    flags: Partial<F>,
+    args: string[]
   ): Promise<number> | Promise<void> | number | void;
 };
 
@@ -48,6 +59,16 @@ function buildCommanderConfig<F extends FlagParams>(
       "path to the project's root directory",
       process.cwd()
     );
+
+  // add usage if specified
+  if (action.usage) {
+    command.usage(action.usage);
+  }
+
+  // enable passthrough args if manual arg parsing is enabled
+  if (action.manualFlagParsing) {
+    command.enablePositionalOptions().allowUnknownOption().passThroughOptions();
+  }
 
   // add custom flags
   for (const [fullName, flag] of Object.entries(action.flags) as [
@@ -73,7 +94,11 @@ function buildCommanderConfig<F extends FlagParams>(
 
   // set action function
   command.action(async (options) => {
-    await action.run(await Project.open(options.project), options);
+    await action.run(
+      await Project.open(options.project),
+      options,
+      command.args
+    );
   });
 
   return command;
