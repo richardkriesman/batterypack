@@ -1,7 +1,7 @@
 {
   "name": "batterypack",
   "description": "An opinionated, \"batteries included\" project management and build tool.",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Richard Kriesman <rkriesman@gmail.com>",
   "license": "MIT",
   "publishConfig": {
@@ -17,6 +17,7 @@
   },
   "files": [
     "build",
+    "*.schema.json",
     "docs/schemas",
     "LICENSE.txt",
     "README.md"
