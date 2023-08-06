@@ -1,20 +1,17 @@
 {
   "name": "batterypack",
   "description": "An opinionated, \"batteries included\" project management and build tool.",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "author": "Richard Kriesman <rkriesman@gmail.com>",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=14.0.0 <19.0.0"
+    "node": ">=16.0.0"
   },
   "main": "build/index.js",
   "bin": "build/index.js",
-  "scripts": {
-    "build": "batterypack build"
-  },
   "files": [
     "build",
     "*.schema.json",
@@ -27,13 +24,13 @@
     "@types/jest": "^27.5.2",
     "@types/js-yaml": "^4.0.5",
     "@types/prettier": "^2.7.1",
-    "@types/xxhashjs": "^0.2.2",
-    "batterypack": "0.4.2"
+    "@types/xxhashjs": "^0.2.2"
   },
   "dependencies": {
+    "@aws-sdk/client-codeartifact": "^3.385.0",
+    "@aws-sdk/credential-providers": "^3.385.0",
     "@types/node": "^14.0.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
-    "aws-sdk": "^2.1231.0",
     "chalk": "^4.1.2",
     "cli-table": "^0.3.11",
     "commander": "^8.3.0",
@@ -42,7 +39,7 @@
     "jsonschema": "^1.4.1",
     "listr2": "^4.0.5",
     "madge": "^5.0.1",
-    "prettier": "2.7.1",
+    "prettier": "^2.7.1",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21",
     "ts-transformer-keys": "^0.4.3",

@@ -1,7 +1,11 @@
-import { CodeArtifact, SharedIniFileCredentials } from "aws-sdk";
+import {
+  CodeartifactClient,
+  GetAuthorizationTokenCommand,
+} from "@aws-sdk/client-codeartifact";
 
 import { PathResolver, ProjectPaths } from "@project/paths";
 import { LoadedStore, YamlStore } from "@project/persistence/store";
+import { fromIni } from "@aws-sdk/credential-providers";
 
 /**
  * Map of user credentials. These credentials are specific to the user and must
@@ -68,19 +72,17 @@ export class CredentialsFile extends YamlStore<Credentials> {
     switch (credential.type) {
       // AWS CodeArtifact
       case "codeartifact":
-        const profile = new SharedIniFileCredentials({
-          profile: credential.profileName,
+        const client: CodeartifactClient = new CodeartifactClient({
+          credentials: fromIni({
+            profile: credential.profileName,
+          }),
         });
-        const client: CodeArtifact = new CodeArtifact({
-          credentials: profile,
-          region: credential.region,
-        });
-        const token = await client
-          .getAuthorizationToken({
+        const token = await client.send(
+          new GetAuthorizationTokenCommand({
             domain: credential.domain,
             domainOwner: credential.domainOwner,
           })
-          .promise();
+        );
         return token.authorizationToken!;
 
       // static token
