@@ -33,9 +33,10 @@
     "lint-staged": "^10.5.3"
   },
   "dependencies": {
+    "@aws-sdk/client-codeartifact": "^3.385.0",
+    "@aws-sdk/credential-providers": "^3.385.0",
     "@types/node": "^14.0.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
-    "aws-sdk": "^2.1231.0",
     "chalk": "^4.1.2",
     "cli-table": "^0.3.11",
     "commander": "^8.3.0",
@@ -59,5 +60,6 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
-  }
+  },
+  "packageManager": "yarn@3.6.1"
 }
