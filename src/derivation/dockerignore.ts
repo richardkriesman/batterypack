@@ -43,9 +43,10 @@ yarn-error.log
 !.yarn/versions
 .pnp.*
 
-# TypeScript
+# Build files
 build/
 tsconfig.tsbuildinfo
+*.tmp
 
 # batterypack-managed files
 .batterypack/

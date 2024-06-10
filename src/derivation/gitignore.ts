@@ -27,10 +27,6 @@ export class GitIgnoreDerivation implements Derivation {
 .DS_Store
 thumbs.db
 
-# IDE settings
-.idea/
-.vscode/
-
 # Node
 node_modules
 
@@ -43,9 +39,10 @@ yarn-error.log
 !.yarn/versions
 .pnp.*
 
-# TypeScript
+# Build files
 build/
 tsconfig.tsbuildinfo
+*.tmp
 
 # Jest
 coverage/
